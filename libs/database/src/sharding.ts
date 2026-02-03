@@ -16,6 +16,11 @@ export class ShardingManager {
     // For demo purposes, we return the first shard
     const keys = Array.from(this.shards.keys());
     if (keys.length === 0) return undefined;
-    return this.shards.get(keys[0]);
+
+    // Explicitly check for undefined to satisfy strict mode
+    const firstKey = keys[0];
+    if (firstKey === undefined) return undefined;
+
+    return this.shards.get(firstKey);
   }
 }

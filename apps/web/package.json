@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.37.1",
     "@salesos/auth": "^0.0.0",
     "@salesos/core": "^0.0.0",
     "@salesos/database": "*",
@@ -20,7 +21,8 @@
     "next": "latest",
     "next-intl": "^4.8.2",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "svix": "^1.84.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.1.6",
