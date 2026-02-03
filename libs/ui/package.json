@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\""
+  },
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^12.31.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@salesos/database",
+  "name": "@salesos/ai-assistant",
   "version": "0.0.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -7,10 +7,10 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@prisma/client": "^7.3.0",
-    "typescript": "latest"
+    "@salesos/core": "*",
+    "@salesos/ai": "*"
   },
   "devDependencies": {
-    "prisma": "^7.3.0"
+    "typescript": "^5.0.0"
   }
 }
