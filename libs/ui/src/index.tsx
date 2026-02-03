@@ -1,2 +1,3 @@
-export * from './components/CommandPalette';
-export * from './hooks/useKeyboardShortcuts';
+export * from './components/theme-provider';
+export * from './components/ui/sonner';
+export * from './components/command-palette';
