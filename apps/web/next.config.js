@@ -6,7 +6,10 @@ const nextConfig = {
     "@salesos/database",
     "@salesos/auth",
     "@salesos/prospector",
-    "@salesos/hub"
+    "@salesos/hub",
+    "@salesos/communication",
+    "@salesos/ai",
+    "@salesos/ai-assistant"
   ],
   reactStrictMode: true,
 };

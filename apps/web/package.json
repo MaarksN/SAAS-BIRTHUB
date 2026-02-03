@@ -16,7 +16,10 @@
     "@salesos/database": "*",
     "@salesos/auth": "*",
     "@salesos/prospector": "*",
-    "@salesos/hub": "*"
+    "@salesos/hub": "*",
+    "@salesos/communication": "*",
+    "@salesos/ai": "*",
+    "@salesos/ai-assistant": "*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

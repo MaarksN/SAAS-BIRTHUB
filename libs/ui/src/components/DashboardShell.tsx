@@ -6,6 +6,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     { label: "Overview", href: "/dashboard", active: true },
     { label: "Prospector", href: "/dashboard/prospector" },
     { label: "CRM", href: "/dashboard/crm" },
+    { label: "Communication", href: "/communication" },
+    { label: "Catarina AI", href: "/ai-assistant" },
     { label: "Settings", href: "/settings" },
   ];
 
