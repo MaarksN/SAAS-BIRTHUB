@@ -1,16 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: [
+    "@salesos/ui",
+    "@salesos/core",
+    "@salesos/database",
+    "@salesos/auth",
+    "@salesos/prospector",
+    "@salesos/hub",
+    "@salesos/communication",
+    "@salesos/ai",
+    "@salesos/ai-assistant"
+  ],
   reactStrictMode: true,
-  experimental: {
-    optimizePackageImports: ['@salesos/ui', 'lucide-react', 'date-fns'],
-  },
-  images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,
-  },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-  },
 };
 
 module.exports = nextConfig;

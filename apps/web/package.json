@@ -8,17 +8,26 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@salesos/database": "*",
-    "@salesos/enterprise": "*",
-    "@salesos/growth": "*",
-    "@salesos/social": "*",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "@salesos/ui": "*",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "@salesos/core": "*",
+    "@salesos/database": "*",
+    "@salesos/auth": "*",
+    "@salesos/prospector": "*",
+    "@salesos/hub": "*",
+    "@salesos/communication": "*",
+    "@salesos/ai": "*",
+    "@salesos/ai-assistant": "*"
   },
   "devDependencies": {
-    "@types/node": "^25.2.0",
-    "@types/react": "^19.2.10"
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0"
   }
 }
