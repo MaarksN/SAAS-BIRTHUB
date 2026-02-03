@@ -1,6 +1,7 @@
 {
-  "name": "web",
+  "name": "docs",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -8,19 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@salesos/auth": "*",
-    "@salesos/core": "*",
-    "@salesos/database": "*",
-    "@salesos/enterprise": "*",
-    "@salesos/growth": "*",
-    "@salesos/social": "*",
-    "@salesos/ui": "*",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "@salesos/ui": "*"
   },
   "devDependencies": {
-    "@types/node": "^20.19.31",
+    "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "typescript": "^5.0.0"

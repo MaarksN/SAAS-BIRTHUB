@@ -1,25 +1,23 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LinkedInAutomation, EnrichmentService } from '@salesos/social';
 import { AuditService, WhiteLabelService } from '@salesos/enterprise';
 import { ReferralSystem, CollaborationService, OnboardingService } from '@salesos/growth';
 import { CommandPalette, ZeroInbox, usePredictivePrefetch } from '@salesos/ui';
 import { mockUser } from '@salesos/auth';
 
+// Instantiate services outside component to persist state across re-renders (Singleton pattern for demo)
+const linkedIn = new LinkedInAutomation();
+const enrichment = new EnrichmentService();
+const audit = new AuditService();
+const branding = new WhiteLabelService();
+const referral = new ReferralSystem();
+const collab = new CollaborationService();
+const onboarding = new OnboardingService();
+
 export default function Page() {
-  // Cycle 16
-  const linkedIn = new LinkedInAutomation();
-  const enrichment = new EnrichmentService();
-
-  // Cycle 17
-  const audit = new AuditService();
-  const branding = new WhiteLabelService();
-
-  // Cycle 19
-  const referral = new ReferralSystem();
-  const collab = new CollaborationService();
-  const onboarding = new OnboardingService();
+  const [companyName, setCompanyName] = useState(branding.getConfig().companyName);
 
   // Cycle 20 (Hook)
   const prefetchData = usePredictivePrefetch(async () => {
@@ -29,6 +27,7 @@ export default function Page() {
   useEffect(() => {
     collab.updatePresence(mockUser.id, '/dashboard');
     branding.updateConfig({ companyName: 'My Agency' });
+    setCompanyName(branding.getConfig().companyName);
   }, []);
 
   const commands = [
@@ -44,7 +43,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>{branding.getConfig().companyName} - Cycles 16-20 Demo</h1>
+      <h1>{companyName} - Cycles 16-20 Demo</h1>
 
       <section style={{ marginBottom: '20px' }}>
         <h2>Cycle 16: Social Selling</h2>
