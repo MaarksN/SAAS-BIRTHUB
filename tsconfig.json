@@ -29,7 +29,11 @@
       "@salesos/ai": ["libs/ai/src"],
       "@salesos/ai/*": ["libs/ai/src/*"],
       "@salesos/integrations": ["libs/integrations/src"],
-      "@salesos/integrations/*": ["libs/integrations/src/*"]
+      "@salesos/integrations/*": ["libs/integrations/src/*"],
+      "@salesos/prospector": ["libs/prospector/src"],
+      "@salesos/prospector/*": ["libs/prospector/src/*"],
+      "@salesos/hub": ["libs/hub/src"],
+      "@salesos/hub/*": ["libs/hub/src/*"]
     }
   }
 }
