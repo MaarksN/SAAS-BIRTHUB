@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@salesos/ui"],
+  transpilePackages: [
+    "@salesos/ui",
+    "@salesos/core",
+    "@salesos/database",
+    "@salesos/auth",
+    "@salesos/prospector",
+    "@salesos/hub"
+  ],
   reactStrictMode: true,
 };
 
