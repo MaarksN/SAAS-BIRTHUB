@@ -8,26 +8,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@salesos/ui": "*",
-    "@salesos/core": "*",
+    "@salesos/auth": "^0.0.0",
+    "@salesos/core": "^0.0.0",
     "@salesos/database": "*",
-    "@salesos/auth": "*",
-    "@salesos/prospector": "*",
-    "@salesos/hub": "*",
-    "@salesos/communication": "*",
-    "@salesos/ai": "*",
-    "@salesos/ai-assistant": "*"
+    "@salesos/enterprise": "*",
+    "@salesos/growth": "*",
+    "@salesos/social": "*",
+    "@salesos/ui": "*",
+    "@tanstack/react-query": "^5.90.20",
+    "@tanstack/react-query-devtools": "^5.91.3",
+    "next": "latest",
+    "next-intl": "^4.8.2",
+    "react": "latest",
+    "react-dom": "latest"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.0.0",
-    "tailwindcss": "^3.3.0",
-    "autoprefixer": "^10.0.0",
-    "postcss": "^8.0.0"
+    "@next/bundle-analyzer": "^16.1.6",
+    "@types/node": "^25.2.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3"
   }
 }

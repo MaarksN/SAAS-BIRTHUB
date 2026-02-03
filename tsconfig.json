@@ -1,18 +1,31 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
+    "target": "esnext",
     "module": "esnext",
+    "lib": ["esnext", "dom", "dom.iterable"],
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true
-  },
-  "exclude": ["node_modules"]
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@salesos/core": ["libs/core/src"],
+      "@salesos/core/*": ["libs/core/src/*"],
+      "@salesos/auth": ["libs/auth/src"],
+      "@salesos/auth/*": ["libs/auth/src/*"],
+      "@salesos/ui": ["libs/ui/src"],
+      "@salesos/ui/*": ["libs/ui/src/*"],
+      "@salesos/database": ["libs/database/src"],
+      "@salesos/database/*": ["libs/database/src/*"],
+      "@salesos/enterprise": ["libs/enterprise/src"],
+      "@salesos/enterprise/*": ["libs/enterprise/src/*"],
+      "@salesos/growth": ["libs/growth/src"],
+      "@salesos/growth/*": ["libs/growth/src/*"],
+      "@salesos/social": ["libs/social/src"],
+      "@salesos/social/*": ["libs/social/src/*"]
+    }
+  }
 }

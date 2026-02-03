@@ -1,9 +1,13 @@
-import "./globals.css";
-import type { Metadata } from "next";
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { Providers } from './providers';
+import { Toaster } from '@salesos/ui';
 
-export const metadata: Metadata = {
-  title: "SalesOS Ultimate",
-  description: "The world's best SaaS for sales acceleration.",
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'SalesOS Ultimate',
+  description: 'Unified Sales Platform',
 };
 
 export default function RootLayout({
@@ -13,7 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={inter.className}>
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
+      </body>
     </html>
   );
 }

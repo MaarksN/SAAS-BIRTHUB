@@ -1,2 +1,1 @@
-export * from './auth-service';
-export * from './middleware';
+export * from './AuthService';

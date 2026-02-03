@@ -7,10 +7,10 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "^7.3.0",
+    "typescript": "latest"
   },
   "devDependencies": {
-    "prisma": "^5.0.0",
-    "typescript": "^5.0.0"
+    "prisma": "^7.3.0"
   }
 }
