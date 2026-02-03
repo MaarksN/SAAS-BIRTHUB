@@ -25,7 +25,11 @@
       "@salesos/growth": ["libs/growth/src"],
       "@salesos/growth/*": ["libs/growth/src/*"],
       "@salesos/social": ["libs/social/src"],
-      "@salesos/social/*": ["libs/social/src/*"]
+      "@salesos/social/*": ["libs/social/src/*"],
+      "@salesos/ai": ["libs/ai/src"],
+      "@salesos/ai/*": ["libs/ai/src/*"],
+      "@salesos/integrations": ["libs/integrations/src"],
+      "@salesos/integrations/*": ["libs/integrations/src/*"]
     }
   }
 }

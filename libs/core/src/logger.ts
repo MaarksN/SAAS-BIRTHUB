@@ -1,11 +1,18 @@
-export const logger = {
-  info: (message: string, meta?: Record<string, any>) => {
-    console.log(JSON.stringify({ level: 'info', message, meta, timestamp: new Date().toISOString() }));
-  },
-  error: (message: string, error?: any) => {
-    console.error(JSON.stringify({ level: 'error', message, error, timestamp: new Date().toISOString() }));
-  },
-  warn: (message: string, meta?: Record<string, any>) => {
-    console.warn(JSON.stringify({ level: 'warn', message, meta, timestamp: new Date().toISOString() }));
-  }
-};
+import winston from 'winston';
+
+export const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  defaultMeta: { service: 'salesos-core' },
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
+    }),
+  ],
+});

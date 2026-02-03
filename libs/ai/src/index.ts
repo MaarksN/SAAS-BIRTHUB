@@ -1,2 +1,2 @@
-export * from './vector-db';
-export * from './llm-gateway';
+export * from './AiService';
+export * from './providers/openai';
