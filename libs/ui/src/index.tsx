@@ -4,4 +4,7 @@ export * from './components/command-palette';
 export * from './components/dashboard/sidebar';
 export * from './components/dashboard/header';
 export * from './components/dashboard/user-nav';
+export * from './components/prospector/search-form';
+export * from './components/prospector/results-table';
+export * from './components/hub/kanban-board';
 export * from './lib/utils';
