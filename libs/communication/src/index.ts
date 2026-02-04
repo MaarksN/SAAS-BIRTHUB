@@ -1,2 +1,2 @@
-export * from './email-client';
-export * from './sequence-builder';
+export * from './services/bdr.service';
+export * from './types/bdr';
