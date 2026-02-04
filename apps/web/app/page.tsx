@@ -7,16 +7,16 @@ import { ReferralSystem } from '@salesos/growth';
 import { CommandPalette, Button, Input } from '@salesos/ui';
 import { AppError } from '@salesos/core';
 
+const commands = [
+  { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
+  { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
+];
+
 export default function Home() {
   // Just to demonstrate usage (these would normally be used in specific components)
   const linkedIn = new LinkedInAutomation();
   const audit = new AuditService();
   const referral = new ReferralSystem();
-
-  const commands = [
-    { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
-    { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
-  ];
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-slate-50">
