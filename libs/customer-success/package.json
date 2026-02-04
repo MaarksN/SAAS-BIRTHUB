@@ -6,6 +6,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "build": "tsc",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"**/*.ts*\""
+  },
   "dependencies": {},
   "devDependencies": {
     "typescript": "latest"
