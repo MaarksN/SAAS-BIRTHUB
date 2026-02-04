@@ -161,6 +161,8 @@ model Lead {
   companyName    String?
   score          Float    @default(0)
   status         String   @default("NEW") // NEW, QUALIFIED, DISQUALIFIED
+  marketingCampaignId String?
+  marketingCampaign MarketingCampaign? @relation(fields: [marketingCampaignId], references: [id])
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   leadScores     LeadScore[]
@@ -350,4 +352,51 @@ model OpsAudit {
   createdAt      DateTime @default(now())
 
   @@map("ops_audits")
+}
+
+// Growth Marketing Models
+
+model MarketingCampaign {
+  id             String   @id @default(cuid())
+  name           String
+  channel        String   // LinkedIn, Google, Email, etc.
+  budget         Float
+  spend          Float
+  status         String   // ACTIVE, PAUSED, COMPLETED
+  startDate      DateTime
+  endDate        DateTime?
+  leads          Lead[]
+  attribution    Attribution[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("marketing_campaigns")
+}
+
+model Attribution {
+  id             String   @id @default(cuid())
+  campaignId     String
+  campaign       MarketingCampaign @relation(fields: [campaignId], references: [id])
+  leadId         String?
+  dealId         String?
+  touchpointType String   // FIRST_TOUCH, LAST_TOUCH, MULTI_TOUCH
+  weight         Float
+  value          Float
+  createdAt      DateTime @default(now())
+
+  @@map("attributions")
+}
+
+model Experiment {
+  id             String   @id @default(cuid())
+  name           String
+  type           String   // A/B, MULTIVARIATE
+  status         String   // RUNNING, CONCLUDED
+  variants       Json
+  winnerVariant  String?
+  confidence     Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("experiments")
 }

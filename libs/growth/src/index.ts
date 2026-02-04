@@ -1,2 +1,2 @@
-export * from './referral';
-export * from './gamification';
+export * from './services/growth.service';
+export const growthModule = "growth";
