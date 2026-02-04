@@ -1,14 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { PaginationSchema, EmailSchema } from '../../schemas/v1/common.schema';
+import { PaginationSchema, EmailSchema, TimestampSchema } from '../../schemas/v1/common.schema';
 import { PaginationMetaDto } from './common.dto';
 
 describe('Common Schemas', () => {
-  it('should validate pagination', () => {
-    const valid = { page: 1, limit: 10 };
+  it('should validate and coerce pagination', () => {
+    // Test string input coercion
+    const valid = { page: "1", limit: "10" };
     const result = PaginationSchema.safeParse(valid);
     expect(result.success).toBe(true);
     if (result.success) {
         expect(result.data.page).toBe(1);
+        expect(result.data.limit).toBe(10);
     }
   });
 
@@ -23,15 +25,27 @@ describe('Common Schemas', () => {
     const result = EmailSchema.safeParse(valid);
     expect(result.success).toBe(true);
   });
+
+  it('should coerce date strings', () => {
+      const dateStr = "2023-01-01T00:00:00.000Z";
+      const valid = {
+          createdAt: dateStr,
+          updatedAt: dateStr
+      };
+      const result = TimestampSchema.safeParse(valid);
+      expect(result.success).toBe(true);
+      if (result.success) {
+          expect(result.data.createdAt).toBeInstanceOf(Date);
+      }
+  });
 });
 
 describe('Common DTOs', () => {
-  it('should type check PaginationMetaDto', () => {
+  it('should allow partial PaginationMetaDto', () => {
       const meta: PaginationMetaDto = {
-          page: 1,
-          limit: 10,
           total: 100
       };
-      expect(meta.page).toBe(1);
+      expect(meta.total).toBe(100);
+      expect(meta.page).toBeUndefined();
   });
 });
