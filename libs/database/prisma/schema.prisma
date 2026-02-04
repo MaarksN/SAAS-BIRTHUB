@@ -28,6 +28,8 @@ model User {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   deals          Deal[]
+  tickets        Ticket[]
+  territories    Territory[]
 
   @@map("users")
 }
@@ -40,6 +42,7 @@ model Role {
   organization   Organization @relation(fields: [organizationId], references: [id])
   users          User[]
   permissions    Permission[]
+  commissionRules CommissionRule[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
@@ -72,6 +75,10 @@ model CompanyProfile {
   reliability    DataReliabilityScore?
   buyingCommittees BuyingCommittee[]
   deals          Deal[]
+  healthScores   CustomerHealth[]
+  successPlans   SuccessPlan[]
+  qbrs           QBR[]
+  tickets        Ticket[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -231,4 +238,116 @@ model Meeting {
   updatedAt DateTime @updatedAt
 
   @@map("meetings")
+}
+
+// Customer Success - Retention Models
+
+model CustomerHealth {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id])
+  score          Float    // 0-100
+  riskLevel      String   // LOW, MEDIUM, HIGH
+  churnProbability Float
+  factors        Json
+  updatedAt      DateTime @updatedAt
+
+  @@map("customer_health_scores")
+}
+
+model SuccessPlan {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id])
+  objectives     Json
+  status         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("success_plans")
+}
+
+model QBR {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id])
+  date           DateTime
+  summary        String
+  sentiment      String
+  createdAt      DateTime @default(now())
+
+  @@map("qbrs")
+}
+
+// Support - Technical Models
+
+model Ticket {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  status         String   // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority       String   // LOW, MEDIUM, HIGH, CRITICAL
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id])
+  requesterId    String?
+  assigneeId     String?
+  assignee       User?    @relation(fields: [assigneeId], references: [id])
+  tags           String[]
+  sentiment      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("tickets")
+}
+
+model KnowledgeBaseArticle {
+  id             String   @id @default(cuid())
+  title          String
+  content        String
+  tags           String[]
+  views          Int      @default(0)
+  helpfulCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("kb_articles")
+}
+
+// Sales Ops - RevOps Models
+
+model CommissionRule {
+  id             String   @id @default(cuid())
+  name           String
+  roleId         String
+  role           Role     @relation(fields: [roleId], references: [id])
+  formula        String   // e.g., "deal_value * 0.10"
+  conditions     Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("commission_rules")
+}
+
+model Territory {
+  id             String   @id @default(cuid())
+  name           String
+  criteria       Json     // e.g., { "region": "South", "size": "Enterprise" }
+  managerId      String?
+  manager        User?    @relation(fields: [managerId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("territories")
+}
+
+model OpsAudit {
+  id             String   @id @default(cuid())
+  entityType     String
+  entityId       String
+  action         String
+  performedBy    String
+  details        Json
+  createdAt      DateTime @default(now())
+
+  @@map("ops_audits")
 }

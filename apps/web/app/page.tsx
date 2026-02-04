@@ -1,33 +1,15 @@
 'use client';
 
 import React from 'react';
-import { LinkedInAutomation } from '@salesos/social';
-import { AuditService } from '@salesos/enterprise';
-import { ReferralSystem } from '@salesos/growth';
-import { CommandPalette, Button, Input } from '@salesos/ui';
-import { AppError } from '@salesos/core';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@salesos/ui';
 
 export default function Home() {
-  // Just to demonstrate usage (these would normally be used in specific components)
-  const linkedIn = new LinkedInAutomation();
-  const audit = new AuditService();
-  const referral = new ReferralSystem();
-
-  const commands = [
-    { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
-    { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
-  ];
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-slate-50">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <h1 className="text-4xl font-bold text-center mb-8">
           SalesOS <span className="text-blue-600">Ultimate</span>
         </h1>
-        <div className="hidden">
-            {/* Keeping references to demonstrate libraries are linked */}
-            <CommandPalette commands={commands} />
-        </div>
       </div>
 
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
