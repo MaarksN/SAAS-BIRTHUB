@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import ldr, bdr, sdr, ae, cs, support, ops, head, cro, growth
+from routers import ldr, bdr, sdr, ae, cs, support, ops, head, cro, growth, onboarding
 
 app = FastAPI()
 
@@ -13,6 +13,7 @@ app.include_router(ops.router)
 app.include_router(head.router)
 app.include_router(cro.router)
 app.include_router(growth.router)
+app.include_router(onboarding.router)
 
 @app.get("/")
 def read_root():

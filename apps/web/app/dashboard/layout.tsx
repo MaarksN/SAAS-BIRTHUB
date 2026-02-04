@@ -13,6 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/bdr', label: 'BDR (Hunter)' },
     { href: '/dashboard/sdr', label: 'SDR (Inbound)' },
     { href: '/dashboard/ae', label: 'AE (Closer)' },
+    { href: '/dashboard/onboarding', label: 'Onboarding' },
     { href: '/dashboard/cs', label: 'Customer Success' },
     { href: '/dashboard/support', label: 'Support' },
     { href: '/dashboard/ops', label: 'Sales Ops' },

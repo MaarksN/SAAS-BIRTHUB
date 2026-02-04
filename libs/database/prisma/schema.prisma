@@ -30,6 +30,7 @@ model User {
   deals          Deal[]
   tickets        Ticket[]
   territories    Territory[]
+  tasks          ImplementationTask[]
 
   @@map("users")
 }
@@ -79,6 +80,7 @@ model CompanyProfile {
   successPlans   SuccessPlan[]
   qbrs           QBR[]
   tickets        Ticket[]
+  onboardingProjects OnboardingProject[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -399,4 +401,38 @@ model Experiment {
   updatedAt      DateTime @updatedAt
 
   @@map("experiments")
+}
+
+// Onboarding - Implementation Models
+
+model OnboardingProject {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        CompanyProfile @relation(fields: [companyId], references: [id])
+  name           String
+  status         String   // PLANNED, IN_PROGRESS, DELAYED, COMPLETED
+  startDate      DateTime
+  targetGoLive   DateTime
+  actualGoLive   DateTime?
+  tasks          ImplementationTask[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("onboarding_projects")
+}
+
+model ImplementationTask {
+  id             String            @id @default(cuid())
+  projectId      String
+  project        OnboardingProject @relation(fields: [projectId], references: [id])
+  title          String
+  status         String            // TODO, IN_PROGRESS, DONE
+  assignedToId   String?
+  assignee       User?             @relation(fields: [assignedToId], references: [id])
+  dueDate        DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@map("implementation_tasks")
 }
