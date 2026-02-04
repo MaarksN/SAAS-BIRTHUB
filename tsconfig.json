@@ -33,7 +33,17 @@
       "@salesos/prospector": ["libs/prospector/src"],
       "@salesos/prospector/*": ["libs/prospector/src/*"],
       "@salesos/hub": ["libs/hub/src"],
-      "@salesos/hub/*": ["libs/hub/src/*"]
+      "@salesos/hub/*": ["libs/hub/src/*"],
+      "@salesos/automation": ["libs/automation/src"],
+      "@salesos/automation/*": ["libs/automation/src/*"],
+      "@salesos/communication": ["libs/communication/src"],
+      "@salesos/communication/*": ["libs/communication/src/*"],
+      "@salesos/voice": ["libs/voice/src"],
+      "@salesos/voice/*": ["libs/voice/src/*"],
+      "@salesos/ai-assistant": ["libs/ai-assistant/src"],
+      "@salesos/ai-assistant/*": ["libs/ai-assistant/src/*"],
+      "@salesos/ai-content": ["libs/ai-content/src"],
+      "@salesos/ai-content/*": ["libs/ai-content/src/*"]
     }
   }
 }
