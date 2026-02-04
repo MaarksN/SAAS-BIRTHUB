@@ -25,7 +25,13 @@
       "@salesos/growth": ["libs/growth/src"],
       "@salesos/growth/*": ["libs/growth/src/*"],
       "@salesos/social": ["libs/social/src"],
-      "@salesos/social/*": ["libs/social/src/*"]
+      "@salesos/social/*": ["libs/social/src/*"],
+      "@salesos/onboarding": ["libs/onboarding/src"],
+      "@salesos/onboarding/*": ["libs/onboarding/src/*"],
+      "@salesos/customer-success": ["libs/customer-success/src"],
+      "@salesos/customer-success/*": ["libs/customer-success/src/*"],
+      "@salesos/support": ["libs/support/src"],
+      "@salesos/support/*": ["libs/support/src/*"]
     }
   }
 }
