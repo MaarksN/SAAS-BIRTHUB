@@ -1,15 +1,13 @@
+import { PaginationMetaDto } from './dtos/v1/common.dto';
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-  };
+  meta?: PaginationMetaDto;
 }
 
-export function successResponse<T>(data: T, meta?: any): ApiResponse<T> {
+export function successResponse<T>(data: T, meta?: PaginationMetaDto): ApiResponse<T> {
   return {
     success: true,
     data,
