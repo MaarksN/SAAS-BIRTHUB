@@ -55,3 +55,47 @@ model Permission {
 
   @@map("permissions")
 }
+
+// LDR - Market Intelligence Models
+
+model CompanyProfile {
+  id             String   @id @default(cuid())
+  cnpj           String   @unique
+  name           String
+  segment        String?
+  cnae           String?
+  employeesCount Int?
+  foundedAt      DateTime?
+  isActive       Boolean  @default(true)
+  enrichmentLogs EnrichmentLog[]
+  reliability    DataReliabilityScore?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("company_profiles")
+}
+
+model EnrichmentLog {
+  id              String         @id @default(cuid())
+  companyId       String
+  company         CompanyProfile @relation(fields: [companyId], references: [id])
+  source          String
+  dataField       String
+  previousValue   String?
+  newValue        String?
+  confidenceScore Float
+  performedAt     DateTime       @default(now())
+
+  @@map("enrichment_logs")
+}
+
+model DataReliabilityScore {
+  id        String         @id @default(cuid())
+  companyId String         @unique
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+  score     Float          // 0 to 100
+  factors   Json           // Detailed breakdown of factors
+  updatedAt DateTime       @updatedAt
+
+  @@map("data_reliability_scores")
+}
