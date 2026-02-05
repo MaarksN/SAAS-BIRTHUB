@@ -232,3 +232,25 @@ model Meeting {
 
   @@map("meetings")
 }
+
+model EnrichmentHistory {
+  id          String   @id @default(cuid())
+  companyId   String?
+  cnpj        String
+  source      String
+  status      String
+  payload     Json
+  createdAt   DateTime @default(now())
+
+  @@map("enrichment_history")
+}
+
+model LeadScoreLog {
+  id          String   @id @default(cuid())
+  leadId      String
+  score       Int
+  factors     Json
+  createdAt   DateTime @default(now())
+
+  @@map("lead_score_logs")
+}
