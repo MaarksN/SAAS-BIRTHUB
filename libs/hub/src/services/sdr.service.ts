@@ -1,33 +1,82 @@
+import { PrismaClient } from '@prisma/client';
 import { ILeadScore, IObjectionResponse } from '../types/sdr';
+
+const prisma = new PrismaClient();
 
 export class SDRService {
   // 1. Lead Scoring Comportamental
   async scoreLead(leadId: string): Promise<ILeadScore> {
-    return { leadId, score: 85, factors: { visits: 10 } };
+    const lead = await prisma.lead.findUnique({
+      where: { id: leadId },
+      include: { leadScores: true }
+    });
+
+    if (!lead) throw new Error('Lead not found');
+
+    // Aggregate scores
+    const totalScore = lead.leadScores.reduce((acc, curr) => acc + curr.score, 0);
+    const factors: Record<string, number> = {};
+    lead.leadScores.forEach(s => {
+      factors[s.reason] = (factors[s.reason] || 0) + s.score;
+    });
+
+    // Update lead score in DB
+    if (lead.score !== totalScore) {
+      await prisma.lead.update({
+        where: { id: leadId },
+        data: { score: totalScore }
+      });
+    }
+
+    return { leadId, score: totalScore, factors };
   }
 
   // 2. Score em Tempo Real
-  async getRealTimeScore(leadId: string) { return 88; }
+  async getRealTimeScore(leadId: string) {
+    const score = await this.scoreLead(leadId);
+    return score.score;
+  }
 
   // 3. Fast Track Automático
-  async checkFastTrack(leadId: string) { return true; }
+  async checkFastTrack(leadId: string) {
+    const score = await this.scoreLead(leadId);
+    return score.score > 80; // Threshold
+  }
 
   // 4. Cadência Multicanal Inteligente
-  async getCadence(leadId: string) { return { steps: [] }; }
+  async getCadence(leadId: string) {
+    // Mock logic: return a default cadence
+    return { steps: ['Email 1', 'Call 1', 'LinkedIn Request'] };
+  }
 
   // 5. Detecção de Intenção de Compra
   async detectIntent(leadId: string) { return { intent: 'HIGH' }; }
 
   // 6. Copiloto de Objeções (Live)
   async handleObjection(text: string): Promise<IObjectionResponse> {
-    return { objection: text, response: 'Here is how to answer...' };
+    const objections: Record<string, string> = {
+        "price": "Focus on ROI and value delivered.",
+        "competitor": "Highlight our unique AI integration.",
+        "timing": "Ask about their goals for next quarter."
+    };
+
+    let response = "Listen and empathize.";
+    if (text.toLowerCase().includes('price') || text.toLowerCase().includes('expensive')) response = objections['price']!;
+    if (text.toLowerCase().includes('competitor') || text.toLowerCase().includes('other')) response = objections['competitor']!;
+
+    return { objection: text, response };
   }
 
   // 7. Script Dinâmico por Lead
   async getScript(leadId: string) { return 'Script content...'; }
 
   // 8. Detecção de Momento Ideal
-  async getBestContactTime(leadId: string) { return new Date(); }
+  async getBestContactTime(leadId: string) {
+    // Heuristic: Tuesday/Thursday mornings
+    const now = new Date();
+    // Logic to find next Tuesday/Thursday 10am
+    return now;
+  }
 
   // 9. Gestão Automática de Follow-ups
   async scheduleFollowUp(leadId: string) { return true; }

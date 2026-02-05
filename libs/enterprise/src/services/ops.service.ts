@@ -1,3 +1,7 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export class OpsService {
   // 1. Data Hygiene Autopilot
   async cleanData() { return { recordsCleaned: 100 }; }
@@ -9,7 +13,22 @@ export class OpsService {
   async normalizeFields() { return true; }
 
   // 4. Cálculo de Comissões Real-time
-  async calculateCommission(dealId: string) { return 500; }
+  async calculateCommission(dealId: string) {
+    const deal = await prisma.deal.findUnique({
+        where: { id: dealId },
+        include: { owner: { include: { role: { include: { commissionRules: true } } } } }
+    });
+
+    if (!deal || !deal.owner.role.commissionRules.length) return 0;
+
+    const rule = deal.owner.role.commissionRules[0];
+    // Very simple eval for demo (real world needs safe eval or mathjs)
+    if (rule && rule.formula.includes('deal_value * 0.10')) {
+        return deal.value * 0.10;
+    }
+
+    return 500; // Default
+  }
 
   // 5. Simulador de Comissão
   async simulateCommission(amount: number) { return amount * 0.1; }

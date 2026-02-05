@@ -1,4 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import { IMeetingAnalysis, IProposal } from '../types/ae';
+
+const prisma = new PrismaClient();
 
 export class AEService {
   // 1. Assistente de Reunião Inteligente
@@ -17,7 +20,21 @@ export class AEService {
 
   // 5. Gerador de Propostas Dinâmicas
   async generateProposal(dealId: string, items: any[]): Promise<IProposal> {
-    return { dealId, content: 'Proposal...', totalValue: 1000 };
+    const totalValue = items.reduce((sum, item) => sum + (item.price || 0), 0);
+
+    // In real app, generate PDF/HTML content
+    const content = `Proposal for Deal ${dealId}\nItems: ${items.map(i => i.name).join(', ')}\nTotal: ${totalValue}`;
+
+    await prisma.quote.create({
+        data: {
+            dealId,
+            amount: totalValue,
+            status: 'DRAFT',
+            content: items
+        }
+    });
+
+    return { dealId, content, totalValue };
   }
 
   // 6. Precificação Automática Validada
@@ -36,7 +53,16 @@ export class AEService {
   async predictClose(dealId: string) { return 0.8; }
 
   // 11. Forecast Probabilístico (Deal Level)
-  async forecastDeal(dealId: string) { return { value: 1000, date: new Date() }; }
+  async forecastDeal(dealId: string) {
+    const deal = await prisma.deal.findUnique({ where: { id: dealId } });
+    if (!deal) throw new Error('Deal not found');
+
+    const weightedValue = deal.value * (deal.probability / 100);
+    return {
+        value: weightedValue,
+        date: deal.expectedCloseDate || new Date()
+    };
+  }
 
   // 12. Gerador de Follow-up Contextual
   async generateFollowUp(meetingId: string) { return 'Hi...'; }

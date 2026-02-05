@@ -1,6 +1,23 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export class HeadService {
   // 1. Detector de Burnout
-  async detectBurnout(repId: string) { return { risk: 'LOW' }; }
+  async detectBurnout(repId: string) {
+    // Heuristic: Check if user has updated deals/tickets late at night
+    const lateActivity = await prisma.deal.count({
+        where: {
+            ownerId: repId,
+            updatedAt: {
+               // In a real query we would filter by time of day
+               gte: new Date(new Date().setHours(20, 0, 0, 0))
+            }
+        }
+    });
+
+    return { risk: lateActivity > 5 ? 'HIGH' : 'LOW' };
+  }
 
   // 2. Análise de Carga de Trabalho
   async analyzeWorkload(repId: string) { return { utilization: 0.8 }; }
@@ -21,7 +38,17 @@ export class HeadService {
   async recommendTraining(repId: string) { return [{ module: 'Negotiation 101' }]; }
 
   // 8. Análise de Performance por Vendedor
-  async analyzePerformance(repId: string) { return { attainment: 1.1 }; }
+  async analyzePerformance(repId: string) {
+    const wonDeals = await prisma.deal.aggregate({
+        where: { ownerId: repId, stage: 'Closed Won' },
+        _sum: { value: true }
+    });
+
+    const quota = 100000; // Mock
+    const attainment = (wonDeals._sum.value || 0) / quota;
+
+    return { attainment, totalSales: wonDeals._sum.value || 0 };
+  }
 
   // 9. Simulador de Metas
   async simulateQuota(repId: string) { return 100000; }

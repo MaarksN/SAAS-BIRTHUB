@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from typing import List
 from pydantic import BaseModel
+from typing import List, Optional
 
 router = APIRouter()
 
@@ -21,18 +21,17 @@ class ObjectionRequest(BaseModel):
 
 @router.post("/sdr/score-lead", response_model=LeadScoreResponse)
 async def score_lead(request: LeadScoreRequest):
-    # Mock logic
-    return {"score": 85.0, "factors": {"website_visits": 10, "email_opens": 5}}
+    # In real app, this would call an ML model
+    # Mock response consistent with TypeScript interface
+    return {"score": 85.0, "factors": {"visits": 10, "email_opens": 5}}
 
 @router.post("/sdr/handle-objection")
 async def handle_objection(request: ObjectionRequest):
     return {
         "objection": request.objection_text,
-        "response": "I understand your concern. However, our solution..."
+        "response": "I understand your concern about pricing. However, our AI-driven approach reduces CAC by 30%..."
     }
 
 @router.post("/sdr/suggest-schedule")
 async def suggest_schedule(lead_id: str):
     return {"suggested_slots": ["2024-02-20T10:00:00Z", "2024-02-21T14:00:00Z"]}
-
-# ... Additional endpoints for the remaining SDR tools ...

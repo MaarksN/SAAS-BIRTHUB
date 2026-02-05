@@ -6,3 +6,13 @@ coverage
 *.log
 .env
 .next
+dist/
+*.js
+.turbo/
+.next/
+node_modules/
+__pycache__/
+.venv/
+coverage/
+*.d.ts
+!libs/**/src/**/*.js

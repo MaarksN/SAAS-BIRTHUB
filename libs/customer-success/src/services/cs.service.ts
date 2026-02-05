@@ -1,6 +1,22 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export class CSService {
   // 1. Health Score AI
-  async calculateHealthScore(customerId: string) { return { score: 95, risk: 'LOW' }; }
+  async calculateHealthScore(customerId: string) {
+    const health = await prisma.customerHealth.findFirst({
+        where: { companyId: customerId },
+        orderBy: { updatedAt: 'desc' }
+    });
+
+    if (health) {
+        return { score: health.score, risk: health.riskLevel };
+    }
+
+    // Default/Mock
+    return { score: 95, risk: 'LOW' };
+  }
 
   // 2. Detector de Churn Silencioso
   async detectSilentChurn(customerId: string) { return { isChurning: false }; }

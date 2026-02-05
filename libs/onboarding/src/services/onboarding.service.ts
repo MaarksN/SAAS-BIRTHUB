@@ -1,3 +1,7 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export class OnboardingService {
   // 1. Dossiê Real da Venda
   async getSalesDossier(dealId: string) { return { context: 'Full context' }; }
@@ -39,10 +43,22 @@ export class OnboardingService {
   async syncWithCS(projectId: string) { return true; }
 
   // 14. Avaliação de Prontidão
-  async checkReadiness(projectId: string) { return 0.9; }
+  async checkReadiness(projectId: string) {
+    const tasks = await prisma.implementationTask.findMany({
+        where: { projectId }
+    });
+
+    if (tasks.length === 0) return 0;
+
+    const completed = tasks.filter(t => t.status === 'DONE').length;
+    return completed / tasks.length;
+  }
 
   // 15. Go-live Gatekeeper
-  async canGoLive(projectId: string) { return true; }
+  async canGoLive(projectId: string) {
+    const readiness = await this.checkReadiness(projectId);
+    return readiness === 1;
+  }
 
   // 16. Relatório de Ativação
   async generateActivationReport() { return {}; }
