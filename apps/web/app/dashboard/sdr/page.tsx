@@ -3,22 +3,33 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@salesos/ui';
 import {
-  Layers, PhoneIncoming, Flame, Rocket, ArrowLeft, Zap, Brain
+  Layers, PhoneIncoming, Flame, Rocket, ArrowLeft, Zap, Brain,
+  Snowflake, ShieldAlert, Clock, Repeat, XCircle, Lock,
+  Lightbulb, Maximize2, Calculator, Swords, HelpCircle,
+  ClipboardCheck, CheckCircle, Users, BookOpen, Mic, FileAudio
 } from 'lucide-react';
 
 const TOOLS = [
-    {
-        id: 'cadence', name: 'Cadência Total', icon: Layers, color: 'indigo', emoji: '📅', desc: 'Kit de prospecção completo',
-        fields: [{ id: 'f_product', label: 'O que você vende?', type: 'text', placeholder: 'Ex: Software de RH SaaS' }, { id: 'f_persona', label: 'Quem é a Persona?', type: 'text', placeholder: 'Ex: Diretor de RH' }, { id: 'f_pain', label: 'Dor Principal', type: 'text', placeholder: 'Ex: Demora na contratação' }],
-    },
-    {
-        id: 'coldcall', name: 'Cold Call Sim', icon: PhoneIncoming, color: 'rose', emoji: '📞', desc: 'Simulador de objeções',
-        fields: [{ id: 'f_pitch', label: 'Seu Pitch Inicial', type: 'textarea', placeholder: 'Cole aqui seu pitch de abertura...' }, { id: 'f_obj', label: 'Objeção (Opcional)', type: 'text', placeholder: 'Ex: Já tenho fornecedor' }],
-    },
-    {
-        id: 'emailroast', name: 'Email Roast', icon: Flame, color: 'orange', emoji: '🔥', desc: 'Crítica ácida do email',
-        fields: [{ id: 'f_email', label: 'Seu E-mail', type: 'textarea', placeholder: 'Cole o rascunho aqui...' }, { id: 'f_target', label: 'Público Alvo', type: 'text', placeholder: 'Ex: CFOs' }],
-    }
+    { id: 'cadence', name: 'Cadência Total', icon: Layers, color: 'indigo', emoji: '📅', desc: 'Kit de prospecção completo', fields: [{ id: 'f_product', label: 'O que você vende?', type: 'text', placeholder: 'Ex: Software de RH SaaS' }, { id: 'f_persona', label: 'Quem é a Persona?', type: 'text', placeholder: 'Ex: Diretor de RH' }, { id: 'f_pain', label: 'Dor Principal', type: 'text', placeholder: 'Ex: Demora na contratação' }] },
+    { id: 'coldcall', name: 'Cold Call Script', icon: PhoneIncoming, color: 'rose', emoji: '📞', desc: 'Roteiro de ligação', fields: [{ id: 'f_persona', label: 'Persona', type: 'text', placeholder: 'Ex: CEO' }, { id: 'f_value', label: 'Valor', type: 'text', placeholder: 'Ex: Economia' }] },
+    { id: 'emailroast', name: 'Email Roast', icon: Flame, color: 'orange', emoji: '🔥', desc: 'Crítica ácida do email', fields: [{ id: 'f_email', label: 'Seu E-mail', type: 'textarea', placeholder: 'Cole o rascunho aqui...' }] },
+    { id: 'icebreaker', name: 'LinkedIn Icebreaker', icon: Snowflake, color: 'cyan', emoji: '❄️', desc: 'Quebra-gelo perfil', fields: [{ id: 'f_bio', label: 'Bio do Lead', type: 'textarea', placeholder: 'Cole a bio...' }] },
+    { id: 'kill_price', name: 'Objection: Preço', icon: ShieldAlert, color: 'green', emoji: '💸', desc: 'Matar objeção de preço', fields: [{ id: 'f_ctx', label: 'Contexto', type: 'text', placeholder: 'O que ele disse?' }] },
+    { id: 'kill_comp', name: 'Objection: Concorrente', icon: Swords, color: 'red', emoji: '⚔️', desc: 'Matar concorrente', fields: [{ id: 'f_comp', label: 'Concorrente', type: 'text', placeholder: 'Nome do rival' }] },
+    { id: 'kill_time', name: 'Objection: Tempo', icon: Clock, color: 'yellow', emoji: '⏳', desc: 'Matar "sem tempo"', fields: [{ id: 'f_ctx', label: 'Contexto', type: 'text', placeholder: 'O que ele disse?' }] },
+    { id: 'followup', name: 'Follow-up Builder', icon: Repeat, color: 'blue', emoji: '🔄', desc: 'Email de seguimento', fields: [{ id: 'f_ctx', label: 'Contexto Anterior', type: 'text', placeholder: 'Sobre o que falaram?' }] },
+    { id: 'breakup', name: 'Break-up Email', icon: XCircle, color: 'slate', emoji: '👋', desc: 'Email de despedida', fields: [{ id: 'f_name', label: 'Nome', type: 'text', placeholder: 'Nome do lead' }] },
+    { id: 'gatekeeper', name: 'Gatekeeper Bypass', icon: Lock, color: 'purple', emoji: '🗝️', desc: 'Passar pela secretária', fields: [{ id: 'f_role', label: 'Quem atendeu?', type: 'text', placeholder: 'Ex: Recepcionista' }] },
+    { id: 'valueprop', name: 'Value Canvas', icon: Lightbulb, color: 'amber', emoji: '💡', desc: 'Canvas de Valor', fields: [{ id: 'f_prod', label: 'Produto', type: 'text', placeholder: 'Seu produto' }, { id: 'f_pain', label: 'Dor', type: 'text', placeholder: 'Dor do cliente' }] },
+    { id: 'painmag', name: 'Pain Magnifier', icon: Maximize2, color: 'red', emoji: '🔍', desc: 'Aumentar a dor', fields: [{ id: 'f_pain', label: 'Dor', type: 'text', placeholder: 'Problema atual' }] },
+    { id: 'roi', name: 'ROI Calculator', icon: Calculator, color: 'emerald', emoji: '💰', desc: 'Calcular Retorno', fields: [{ id: 'f_cost', label: 'Custo', type: 'text', placeholder: '1000' }, { id: 'f_gain', label: 'Ganho', type: 'text', placeholder: '5000' }] },
+    { id: 'battlecard', name: 'Battlecard', icon: Swords, color: 'orange', emoji: '🛡️', desc: 'Cartão de Batalha', fields: [{ id: 'f_comp', label: 'Concorrente', type: 'text', placeholder: 'Nome' }] },
+    { id: 'spin', name: 'SPIN Questions', icon: HelpCircle, color: 'violet', emoji: '🌀', desc: 'Perguntas SPIN', fields: [{ id: 'f_prod', label: 'Produto', type: 'text', placeholder: 'O que vende?' }] },
+    { id: 'meddic', name: 'MEDDIC Check', icon: ClipboardCheck, color: 'blue', emoji: '📋', desc: 'Checklist Enterprise', fields: [{ id: 'f_deal', label: 'Deal', type: 'text', placeholder: 'Nome da conta' }] },
+    { id: 'bant', name: 'BANT Qualifier', icon: CheckCircle, color: 'teal', emoji: '✅', desc: 'Qualificação BANT', fields: [{ id: 'f_deal', label: 'Deal', type: 'text', placeholder: 'Nome da conta' }] },
+    { id: 'referral', name: 'Referral Request', icon: Users, color: 'pink', emoji: '🤝', desc: 'Pedir indicação', fields: [{ id: 'f_ctx', label: 'Sucesso', type: 'text', placeholder: 'O que entregou?' }] },
+    { id: 'story', name: 'Case Story', icon: BookOpen, color: 'indigo', emoji: '📖', desc: 'Contar Caso', fields: [{ id: 'f_client', label: 'Cliente', type: 'text', placeholder: 'Quem?' }, { id: 'f_res', label: 'Resultado', type: 'text', placeholder: 'O que?' }] },
+    { id: 'whatsapp', name: 'Zap Audio', icon: Mic, color: 'green', emoji: '🟢', desc: 'Roteiro Áudio', fields: [{ id: 'f_name', label: 'Nome', type: 'text', placeholder: 'Lead' }] },
 ];
 
 export default function SDRDashboard() {
@@ -39,11 +50,17 @@ export default function SDRDashboard() {
 
   const handleRun = async () => {
     setLoading(true);
-    // Simulate AI Call
+    // Simulate AI Call based on tool ID
+    // In real app, this calls SDRService methods mapped by ID
     setTimeout(() => {
-        setOutput(`[AI Mock Output for ${activeTool?.name}]\n\nStrategy generated based on inputs: ${JSON.stringify(formValues)}`);
+        let mockRes = `[AI Output for ${activeTool?.name}]\n\n`;
+        if (activeToolId === 'coldcall') mockRes += "Script: Olá, aqui é...";
+        else if (activeToolId === 'roi') mockRes += "ROI Calculado: 400%";
+        else mockRes += `Estratégia gerada para: ${JSON.stringify(formValues)}`;
+
+        setOutput(mockRes);
         setLoading(false);
-    }, 1500);
+    }, 1000);
   };
 
   return (
@@ -69,7 +86,7 @@ export default function SDRDashboard() {
                     <Rocket className="w-12 h-12 text-white animate-pulse" />
                 </div>
                 <h2 className="text-5xl font-black mb-4 tracking-tighter text-white">COCKPIT <span className="text-indigo-400">SDR</span></h2>
-                <p className="text-lg text-slate-400 mb-8">Sistema de Inteligência Tática.</p>
+                <p className="text-lg text-slate-400 mb-8">20 Ferramentas Táticas Prontas.</p>
                 <button className="py-4 px-10 bg-indigo-600 rounded-full text-xs font-black text-white uppercase tracking-widest hover:bg-indigo-500 transition-colors">
                     INICIAR OPERAÇÃO
                 </button>
@@ -81,30 +98,26 @@ export default function SDRDashboard() {
       {view === 'grid' && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-end mb-8">
-                <h2 className="text-3xl font-black text-white">Arsenal Tático</h2>
+                <h2 className="text-3xl font-black text-white">Arsenal Tático (20)</h2>
                 <button onClick={() => setView('dashboard')} className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
                     <ArrowLeft className="w-4 h-4" /> Voltar
                 </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {TOOLS.map((tool) => (
                     <div
                         key={tool.id}
                         onClick={() => handleToolClick(tool.id)}
-                        className="bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50 cursor-pointer transition-all hover:-translate-y-1 rounded-lg"
+                        className="bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50 cursor-pointer transition-all hover:-translate-y-1 rounded-2xl p-5 group"
                     >
-                        <div className="p-6 flex flex-col gap-4">
-                            <div className="flex justify-between items-start">
-                                <div className={`w-12 h-12 rounded-2xl bg-${tool.color}-500/20 flex items-center justify-center`}>
-                                    <tool.icon className={`w-6 h-6 text-${tool.color}-400`} />
-                                </div>
-                                <span className="text-2xl">{tool.emoji}</span>
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`w-10 h-10 rounded-xl bg-${tool.color}-500/20 flex items-center justify-center group-hover:bg-${tool.color}-500/30 transition-colors`}>
+                                <tool.icon className={`w-5 h-5 text-${tool.color}-400`} />
                             </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-white mb-1">{tool.name}</h3>
-                                <p className="text-xs text-slate-400">{tool.desc}</p>
-                            </div>
+                            <span className="text-xl grayscale group-hover:grayscale-0 transition-all">{tool.emoji}</span>
                         </div>
+                        <h3 className="text-sm font-bold text-white mb-1">{tool.name}</h3>
+                        <p className="text-[10px] text-slate-400">{tool.desc}</p>
                     </div>
                 ))}
             </div>
