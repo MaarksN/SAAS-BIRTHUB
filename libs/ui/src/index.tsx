@@ -16,3 +16,5 @@ export * from './components/error-boundary'; // Default export, might need adjus
 export { default as ErrorBoundary } from './components/error-boundary';
 export * from './components/tag-input';
 export { default as useLocalStorage } from './hooks/use-local-storage';
+export * from './components/bulk-actions-toolbar';
+export * from './components/theme-color-picker';
