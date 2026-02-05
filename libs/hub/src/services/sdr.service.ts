@@ -1,67 +1,76 @@
-import { ILeadScore, IObjectionResponse } from '../types/sdr';
+import { ILeadScore, IObjectionResponse } from "../types/sdr";
 
 export class SDRService {
-  // 1. Lead Scoring Comportamental
-  async scoreLead(leadId: string): Promise<ILeadScore> {
-    return { leadId, score: 85, factors: { visits: 10 } };
+  /**
+   * Algoritmo de Lead Scoring Comportamental
+   * Baseado em BANT (Budget, Authority, Need, Timing) implícito
+   */
+  async scoreLead(leadId: string, data?: any): Promise<ILeadScore> {
+    // Dados padrão caso não sejam fornecidos
+    const signals = data || {
+      websiteVisits: 5,
+      emailOpens: 2,
+      pricingPageViews: 1,
+      role: "Decision Maker"
+    };
+
+    let score = 0;
+
+    // Lógica de Pontuação
+    if (signals.role === "Decision Maker") score += 30;
+    if (signals.pricingPageViews > 0) score += 25;
+    score += (signals.websiteVisits * 2); // 2 pontos por visita
+    score += (signals.emailOpens * 5);    // 5 pontos por abertura
+
+    // Normalização (Max 100)
+    score = Math.min(score, 100);
+
+    return {
+      leadId,
+      score,
+      factors: {
+        behavioral: score * 0.6,
+        demographic: score * 0.4
+      }
+    };
   }
 
-  // 2. Score em Tempo Real
-  async getRealTimeScore(leadId: string) { return 88; }
-
-  // 3. Fast Track Automático
-  async checkFastTrack(leadId: string) { return true; }
-
-  // 4. Cadência Multicanal Inteligente
-  async getCadence(leadId: string) { return { steps: [] }; }
-
-  // 5. Detecção de Intenção de Compra
-  async detectIntent(leadId: string) { return { intent: 'HIGH' }; }
-
-  // 6. Copiloto de Objeções (Live)
+  /**
+   * Copiloto de Objeções com Contexto Dinâmico
+   */
   async handleObjection(text: string): Promise<IObjectionResponse> {
-    return { objection: text, response: 'Here is how to answer...' };
+    const objectionsMap: Record<string, string> = {
+      "caro": "Entendo a preocupação com o orçamento. No entanto, clientes como [Empresa X] viram ROI de 300% em 3 meses. O custo de não resolver o problema hoje é maior que o investimento.",
+      "tempo": "Muitos gestores sentem o mesmo. Nossa implementação leva apenas 48h e não exige recursos de TI. Podemos começar pequeno?",
+      "concorrente": "Eles são uma ótima ferramenta genérica. Nós somos especialistas no seu nicho, o que garante funcionalidades que eles não possuem, como [Feature X]."
+    };
+
+    // Detecção simples de palavras-chave (seria substituída por LLM real)
+    let response = "Poderia me dar mais detalhes sobre essa preocupação?";
+
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes("preço") || lowerText.includes("custo") || lowerText.includes("caro")) {
+      response = objectionsMap["caro"] || response;
+    } else if (lowerText.includes("tempo") || lowerText.includes("agora não")) {
+      response = objectionsMap["tempo"] || response;
+    }
+
+    return {
+      objection: text,
+      response
+    };
   }
 
-  // 7. Script Dinâmico por Lead
-  async getScript(leadId: string) { return 'Script content...'; }
-
-  // 8. Detecção de Momento Ideal
-  async getBestContactTime(leadId: string) { return new Date(); }
-
-  // 9. Gestão Automática de Follow-ups
-  async scheduleFollowUp(leadId: string) { return true; }
-
-  // 10. Prevenção de Ghosting
-  async predictGhosting(leadId: string) { return { risk: 0.2 }; }
-
-  // 11. Classificação Automática
-  async classifyLead(leadId: string) { return 'QUALIFIED'; }
-
-  // 12. Priorização de Agenda
-  async prioritizeSchedule() { return []; }
-
-  // 13. No-Show Predictor
-  async predictNoShow(meetingId: string) { return 0.1; }
-
-  // 14. Confirmação Automática de Reunião
-  async confirmMeeting(meetingId: string) { return true; }
-
-  // 15. Handoff Inteligente para AE
-  async handoffToAE(leadId: string) { return true; }
-
-  // 16. Resumo Automático de Qualificação
-  async generateSummary(leadId: string) { return 'Summary...'; }
-
-  // 17. Registro Automático no CRM
-  async syncToCRM(leadId: string) { return true; }
-
-  // 18. Análise de Performance Individual
-  async analyzePerformance(sdrId: string) { return {}; }
-
-  // 19. Sugestão de Melhoria de Abordagem
-  async suggestImprovement(callId: string) { return 'Speak slower'; }
-
-  // 20. Relatório de Qualidade de Leads
-  async getQualityReport() { return {}; }
+  async getCadence(leadId: string) {
+    return {
+      id: "cadence-tech-ceo",
+      name: "Sequência CEO Tech (Alta Conversão)",
+      steps: [
+        { day: 1, type: "LINKEDIN_CONNECT", script: "Vi seu post sobre..." },
+        { day: 1, type: "EMAIL", subject: "Eficiência em vendas" },
+        { day: 3, type: "CALL", script: "Script de abertura suave..." },
+        { day: 5, type: "EMAIL_BUMP", subject: "Re: Eficiência" }
+      ]
+    };
+  }
 }
