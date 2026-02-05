@@ -17,6 +17,7 @@
     "@salesos/ui": "*",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
+    "lucide-react": "^0.563.0",
     "next": "latest",
     "next-intl": "^4.8.2",
     "react": "latest",

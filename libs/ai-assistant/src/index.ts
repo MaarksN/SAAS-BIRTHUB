@@ -1,2 +1,1 @@
-export * from './smart-search';
-export * from './icp-analysis';
+export * from './services/unified-search.service';
