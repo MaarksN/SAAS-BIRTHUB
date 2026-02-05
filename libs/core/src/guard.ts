@@ -35,7 +35,7 @@ export const guard = {
   checkRateLimit: (actionType: string, userId: string = 'anonymous'): void => {
     // Configuration
     let limit = 100; // default requests
-    const window = 60; // 1 minute
+    let window = 60; // 1 minute
 
     if (actionType === 'ai') {
       limit = 20; // stricter for AI

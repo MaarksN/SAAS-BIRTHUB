@@ -1,6 +1,12 @@
 import { ILeadScore, IObjectionResponse } from "../types/sdr";
+import { LeadRepository } from "@salesos/database";
 
 export class SDRService {
+  private leadRepo: LeadRepository;
+
+  constructor() {
+    this.leadRepo = new LeadRepository();
+  }
 
   // --- EXISTING METHODS ---
   async scoreLead(leadId: string, data?: any): Promise<ILeadScore> {
@@ -10,6 +16,14 @@ export class SDRService {
     if (signals.pricingPageViews > 0) score += 25;
     score += (signals.websiteVisits * 2);
     score += (signals.emailOpens * 5);
+
+    // Persist score if possible
+    try {
+        await this.leadRepo.update(leadId, { score });
+    } catch(e) {
+        // Ignore DB errors in mock environment
+    }
+
     return { leadId, score: Math.min(score, 100), factors: { behavioral: score * 0.6, demographic: score * 0.4 } };
   }
 

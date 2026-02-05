@@ -1,14 +1,21 @@
 import { ICNPJEnrichmentResult, IDataReliabilityScore, IInactiveCompanyDetection } from "../types/ldr";
+import { LeadRepository } from "@salesos/database";
 
 // Serviço LDR Profissionalizado (Expansão Pacote 2)
 export class LDRService {
   private aiAgentUrl = process.env.NEXT_PUBLIC_AI_AGENT_URL || "http://localhost:8000/api/v1";
+  private leadRepo: LeadRepository;
+
+  constructor() {
+    this.leadRepo = new LeadRepository();
+  }
 
   // --- EXISTING METHODS ---
   async enrichCNPJ(cnpj: string): Promise<ICNPJEnrichmentResult> {
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
-      return {
+
+      const result: ICNPJEnrichmentResult = {
         cnpj,
         legalName: "Tech Corp Brasil Ltda",
         tradeName: "TechCorp",
@@ -19,6 +26,21 @@ export class LDRService {
         emails: ["contato@techcorp.com.br"],
         cnae: { code: "6202-3/00", description: "Softwares" },
       };
+
+      // Persist enriched data (Mock org ID for now)
+      // In production, orgId comes from context
+      try {
+        await this.leadRepo.create({
+            organizationId: 'org_default',
+            companyName: result.tradeName,
+            status: 'ENRICHED',
+            score: 50
+        });
+      } catch(e) {
+          console.warn("Failed to persist lead (likely no DB connection in dev):", e);
+      }
+
+      return result;
     } catch (error) {
       throw new Error("Falha no serviço de enriquecimento.");
     }

@@ -1,9 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+const prisma = new PrismaClient({
+  // datasourceUrl is deprecated in Prisma 7, use constructor args if needed or env vars directly
+  // datasources: { db: { url: ... } }
+});
 
-export const prisma = global.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+export default prisma;

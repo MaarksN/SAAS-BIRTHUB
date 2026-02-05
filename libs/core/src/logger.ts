@@ -1,7 +1,7 @@
 import { getContext } from './context';
 
 export const logger = {
-  info: (message: string, meta?: Record<string, unknown>) => {
+  info: (message: string, meta?: Record<string, any>) => {
     const ctx = getContext();
     console.log(JSON.stringify({
       level: 'info',
@@ -10,7 +10,7 @@ export const logger = {
       timestamp: new Date().toISOString()
     }));
   },
-  error: (message: string, error?: unknown) => {
+  error: (message: string, error?: any) => {
     const ctx = getContext();
     console.error(JSON.stringify({
       level: 'error',
@@ -20,7 +20,7 @@ export const logger = {
       timestamp: new Date().toISOString()
     }));
   },
-  warn: (message: string, meta?: Record<string, unknown>) => {
+  warn: (message: string, meta?: Record<string, any>) => {
     const ctx = getContext();
     console.warn(JSON.stringify({
       level: 'warn',
