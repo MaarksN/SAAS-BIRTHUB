@@ -7,7 +7,9 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@salesos/core": "*"
+    "@salesos/core": "*",
+    "@salesos/database": "*",
+    "@prisma/client": "^7.3.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

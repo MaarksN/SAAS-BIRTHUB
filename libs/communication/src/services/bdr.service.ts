@@ -1,13 +1,66 @@
+import { PrismaClient } from '@prisma/client';
+import { eventBus } from '@salesos/core';
 import { IBuyingCommitteeMap, IEmailValidation, IMessageGeneration } from '../types/bdr';
 
+const prisma = new PrismaClient();
+
 export class BDRService {
+  constructor() {
+    this.setupListeners();
+  }
+
+  private setupListeners() {
+    eventBus.subscribe('company.enriched', async (event) => {
+      console.log('[BDR] Detected new enriched company:', event.payload.legalName);
+      // Automatically trigger buying committee mapping for the enriched company
+      // In a real scenario we'd use the ID, here assuming CNPJ or looking it up
+      const company = await prisma.companyProfile.findUnique({
+          where: { cnpj: event.payload.cnpj }
+      });
+      if (company) {
+          await this.mapBuyingCommittee(company.id);
+      }
+    });
+  }
+
   // 1. Mapeamento de Buying Committee
   async mapBuyingCommittee(companyId: string): Promise<IBuyingCommitteeMap> {
+    // Check existing
+    const committee = await prisma.buyingCommittee.findFirst({
+        where: { companyId },
+        include: { contacts: true }
+    });
+
+    if (committee) {
+        return {
+            companyId,
+            contacts: committee.contacts.map(c => ({
+                name: c.name,
+                role: c.role || 'Unknown',
+                influenceLevel: (c.influenceLevel as 'HIGH' | 'MEDIUM' | 'LOW') || 'LOW'
+            }))
+        };
+    }
+
+    // Mock Discovery (simulate scraping)
+    const newCommittee = await prisma.buyingCommittee.create({
+        data: { companyId }
+    });
+
+    // Mock finding a CTO
+    await prisma.contact.create({
+        data: {
+            buyingCommitteeId: newCommittee.id,
+            name: 'Mock Detected CTO',
+            role: 'CTO',
+            influenceLevel: 'HIGH',
+            isDecisionMaker: true
+        }
+    });
+
     return {
-      companyId,
-      contacts: [
-        { name: 'Mock CTO', role: 'CTO', influenceLevel: 'HIGH' }
-      ]
+        companyId,
+        contacts: [{ name: 'Mock Detected CTO', role: 'CTO', influenceLevel: 'HIGH' }]
     };
   }
 
@@ -19,7 +72,20 @@ export class BDRService {
 
   // 4. Validação de E-mail Real-time
   async validateEmail(email: string): Promise<IEmailValidation> {
-    return { email, isValid: true, score: 0.9 };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidSyntax = emailRegex.test(email);
+
+    // Simulate domain check
+    const domain = email.split('@')[1];
+    const isDisposable = domain === 'tempmail.com';
+
+    const isValid = isValidSyntax && !isDisposable;
+
+    return {
+        email,
+        isValid,
+        score: isValid ? 0.95 : 0.1
+    };
   }
 
   // 5. Descoberta de Celulares Diretos
