@@ -7,17 +7,28 @@ import {
   ICNAENormalization,
   IGenericRoleDetection,
 } from '../types/ldr';
+import { RedisCacheService } from '@salesos/cache';
+import { logger } from '@salesos/core';
+import { CNPJEnrichmentResultSchema } from '../schemas';
 
 export class LDRService {
   private aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
+  private cache = new RedisCacheService();
 
   // 1. Enriquecimento Automático de CNPJ
   async enrichCNPJ(cnpj: string): Promise<ICNPJEnrichmentResult> {
-    // In a real scenario, this fetches from the python service
-    // const response = await fetch(`${this.aiAgentUrl}/ldr/enrich-cnpj`, { ... });
+    const cacheKey = `ldr:enrich:${cnpj}`;
+    const cached = await this.cache.get<ICNPJEnrichmentResult>(cacheKey);
 
-    // Mock return
-    return {
+    if (cached) {
+      logger.info('Returning cached CNPJ enrichment', { cnpj });
+      return cached;
+    }
+
+    logger.info('Enriching CNPJ from source', { cnpj });
+
+    // Mock return (simulating external call)
+    const result = {
       cnpj,
       legalName: 'Mock Company Ltda',
       foundedDate: '2020-01-01',
@@ -35,6 +46,15 @@ export class LDRService {
         description: 'Desenvolvimento de programas de computador sob encomenda',
       },
     };
+
+    const parsed = CNPJEnrichmentResultSchema.safeParse(result);
+    if (!parsed.success) {
+      logger.error('Invalid enrichment data', { errors: parsed.error });
+      throw new Error('Invalid enrichment data');
+    }
+
+    await this.cache.set(cacheKey, parsed.data, 60 * 60 * 24); // 24h cache
+    return parsed.data as ICNPJEnrichmentResult;
   }
 
   // 2. Validação Cruzada de Fontes

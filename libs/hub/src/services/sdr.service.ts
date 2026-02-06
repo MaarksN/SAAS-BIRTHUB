@@ -1,9 +1,33 @@
 import { ILeadScore, IObjectionResponse } from '../types/sdr';
+import { RedisCacheService } from '@salesos/cache';
+import { logger } from '@salesos/core';
+import { LeadScoreSchema } from '../schemas';
 
 export class SDRService {
+  private cache = new RedisCacheService();
+
   // 1. Lead Scoring Comportamental
   async scoreLead(leadId: string): Promise<ILeadScore> {
-    return { leadId, score: 85, factors: { visits: 10 } };
+    const cacheKey = `hub:score:${leadId}`;
+    const cached = await this.cache.get<ILeadScore>(cacheKey);
+
+    if (cached) {
+      logger.info('Returning cached lead score', { leadId });
+      return cached;
+    }
+
+    logger.info('Calculating lead score', { leadId });
+    // Mock calculation
+    const result = { leadId, score: 85, factors: { visits: 10 } };
+
+    const parsed = LeadScoreSchema.safeParse(result);
+    if (!parsed.success) {
+        logger.error('Invalid lead score', { errors: parsed.error });
+        throw new Error('Invalid lead score generated');
+    }
+
+    await this.cache.set(cacheKey, parsed.data, 300); // 5 min cache
+    return parsed.data;
   }
 
   // 2. Score em Tempo Real

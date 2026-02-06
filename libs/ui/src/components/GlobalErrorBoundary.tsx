@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { ErrorInfo } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
@@ -19,8 +19,16 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 export const GlobalErrorBoundary = ({ children }: { children: React.ReactNode }) => {
+  const logError = (error: unknown, info: ErrorInfo) => {
+    // In production, send this to Sentry/LogRocket
+    console.error("GlobalErrorBoundary Caught Error:", error, info);
+  };
+
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onError={logError}
+    >
       {children}
     </ErrorBoundary>
   );

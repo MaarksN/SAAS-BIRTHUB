@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@salesos/ui';
-import { LDRService } from '@salesos/prospector';
+import { enrichCNPJAction } from '../../app/actions/ldr';
 
 export function EnrichmentTool() {
   const [cnpj, setCnpj] = useState('');
@@ -12,8 +12,7 @@ export function EnrichmentTool() {
   const handleEnrich = async () => {
     setLoading(true);
     try {
-      const service = new LDRService();
-      const data = await service.enrichCNPJ(cnpj);
+      const data = await enrichCNPJAction(cnpj);
       setResult(data);
     } catch (error) {
       console.error(error);

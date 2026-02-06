@@ -1,14 +1,27 @@
 import { IBuyingCommitteeMap, IEmailValidation, IMessageGeneration } from '../types/bdr';
+import { BuyingCommitteeMapSchema, EmailValidationSchema } from '../schemas';
+import { logger } from '@salesos/core';
 
 export class BDRService {
   // 1. Mapeamento de Buying Committee
   async mapBuyingCommittee(companyId: string): Promise<IBuyingCommitteeMap> {
-    return {
+    logger.info('Mapping buying committee', { companyId });
+
+    const result = {
       companyId,
       contacts: [
         { name: 'Mock CTO', role: 'CTO', influenceLevel: 'HIGH' }
       ]
     };
+
+    // Validate output
+    const parsed = BuyingCommitteeMapSchema.safeParse(result);
+    if (!parsed.success) {
+      logger.error('Invalid buying committee data', { errors: parsed.error });
+      throw new Error('Invalid data generated');
+    }
+
+    return parsed.data as IBuyingCommitteeMap;
   }
 
   // 2. Organograma Visual da Conta
@@ -19,7 +32,15 @@ export class BDRService {
 
   // 4. Validação de E-mail Real-time
   async validateEmail(email: string): Promise<IEmailValidation> {
-    return { email, isValid: true, score: 0.9 };
+    logger.info('Validating email', { email });
+    const result = { email, isValid: true, score: 0.9 };
+
+    const parsed = EmailValidationSchema.safeParse(result);
+    if (!parsed.success) {
+      logger.error('Invalid email validation data', { errors: parsed.error });
+      throw new Error('Invalid validation data');
+    }
+    return parsed.data;
   }
 
   // 5. Descoberta de Celulares Diretos
