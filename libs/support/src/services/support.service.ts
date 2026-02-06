@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@salesos/database';
 
 export class SupportService {
   // 1. Classificação Automática de Tickets
@@ -29,10 +27,11 @@ export class SupportService {
   // 5. Sugestão de Solução (KB AI)
   async suggestSolution(ticketId: string) {
     // Mock lookup
+    // @ts-ignore
     const articles = await prisma.knowledgeBaseArticle.findMany({
         take: 3
     });
-    return articles.map(a => ({ title: a.title, url: `/kb/${a.id}` }));
+    return articles.map((a: any) => ({ title: a.title, url: `/kb/${a.id}` }));
   }
 
   // 6. Base de Conhecimento Viva

@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@salesos/database';
 import { eventBus } from '@salesos/core';
 import { IBuyingCommitteeMap, IEmailValidation, IMessageGeneration } from '../types/bdr';
-
-const prisma = new PrismaClient();
 
 export class BDRService {
   constructor() {

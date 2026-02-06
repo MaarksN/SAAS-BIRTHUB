@@ -13,7 +13,7 @@
   "dependencies": {
     "@salesos/core": "*",
     "@salesos/database": "*",
-    "@prisma/client": "^7.3.0"
+    "@prisma/client": "5.21.0"
   },
   "devDependencies": {
     "typescript": "latest"

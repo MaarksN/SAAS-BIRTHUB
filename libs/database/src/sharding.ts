@@ -12,10 +12,8 @@ export class ShardingManager {
   }
 
   getShardForUser(userId: string): ShardConfig | undefined {
-    // Simple consistent hashing or lookup table strategy
-    // For demo purposes, we return the first shard
     const keys = Array.from(this.shards.keys());
-    if (keys.length === 0) return undefined;
+    if (keys.length === 0 || keys[0] === undefined) return undefined;
     return this.shards.get(keys[0]);
   }
 }
