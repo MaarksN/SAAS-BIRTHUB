@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@prisma/client": "^7.3.0",
+    "@salesos/config": "^0.0.0",
     "typescript": "latest"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
+import { env } from '@salesos/config';
 export class LDRService {
-    aiAgentUrl = process.env.AI_AGENT_URL || 'http://localhost:8000';
+    aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
     // 1. Enriquecimento Automático de CNPJ
     async enrichCNPJ(cnpj) {
         // In a real scenario, this fetches from the python service

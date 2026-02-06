@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { env } from "@salesos/config";
 
-const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
+const apiKey = env.GEMINI_API_KEY || env.GOOGLE_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 // Using gemini-1.5-flash as it is a widely available stable model.
 // User requested 2.5-flash-preview which might be experimental or unavailable.

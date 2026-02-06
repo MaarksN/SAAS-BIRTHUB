@@ -1,3 +1,4 @@
+import { env } from '@salesos/config';
 import {
   ICNPJEnrichmentResult,
   IDataReliabilityScore,
@@ -8,7 +9,7 @@ import {
 } from '../types/ldr';
 
 export class LDRService {
-  private aiAgentUrl = process.env.AI_AGENT_URL || 'http://localhost:8000';
+  private aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
 
   // 1. Enriquecimento Automático de CNPJ
   async enrichCNPJ(cnpj: string): Promise<ICNPJEnrichmentResult> {

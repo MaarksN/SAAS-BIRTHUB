@@ -3,6 +3,11 @@ import { z } from 'zod';
 const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  GEMINI_API_KEY: z.string().optional(),
+  GOOGLE_API_KEY: z.string().optional(),
+  AI_AGENT_URL: z.string().url().default('http://localhost:8000'),
+  FEATURE_AI_ENABLED: z.enum(['true', 'false']).optional(),
+  FEATURE_BILLING_ENABLED: z.enum(['true', 'false']).optional(),
 });
 
 // Allow skipping validation for now if needed, e.g. during specific build steps where env might not be present
