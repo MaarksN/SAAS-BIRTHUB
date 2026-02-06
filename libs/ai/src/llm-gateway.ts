@@ -1,4 +1,5 @@
 import { guard, features, logger } from '@salesos/core';
+import { OpenAIProvider } from './providers/openai.provider';
 
 export type LLMProvider = 'openai' | 'anthropic';
 
@@ -7,9 +8,12 @@ export interface CompletionRequest {
   provider?: LLMProvider;
   temperature?: number;
   userId?: string;
+  model?: string;
 }
 
 export const llmGateway = {
+  provider: new OpenAIProvider(),
+
   complete: async (request: CompletionRequest): Promise<string> => {
     const userId = request.userId || 'anonymous';
 
@@ -35,15 +39,16 @@ export const llmGateway = {
       throw error;
     }
 
+    // 4. Execute Real AI Call
+    const response = await llmGateway.provider.generateText(request.prompt, request.model);
+
     // Log the cost event (Audit)
-    logger.info('COST_EVENT: AI Completion started', {
+    logger.info('COST_EVENT: AI Completion success', {
       userId,
       provider: request.provider,
       cost: 1
     });
 
-    // Mock LLM response
-    // In real implementation, this would call the provider
-    return `[AI Response from ${request.provider || 'openai'}] Based on the context, I suggest focusing on value-based selling...`;
+    return response;
   }
 };
