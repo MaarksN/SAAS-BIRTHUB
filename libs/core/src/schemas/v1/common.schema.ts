@@ -6,7 +6,7 @@ export const PaginationSchema = z.object({
 });
 
 export const UuidSchema = z.string().uuid();
-export const EmailSchema = z.string().email();
+export const EmailSchema = z.string().trim().toLowerCase().email();
 
 export const TimestampSchema = z.object({
   createdAt: z.coerce.date(),
