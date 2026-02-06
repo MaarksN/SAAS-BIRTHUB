@@ -1,3 +1,5 @@
+import { RateLimitHelper } from './rate-limit';
+
 export interface LinkedInProfile {
   id: string;
   name: string;
@@ -11,7 +13,10 @@ export interface ConnectionRequest {
 }
 
 export class LinkedInAutomation {
+  private rateLimiter = new RateLimitHelper(10, 0.2); // 10 tokens, 1 refill per 5s
+
   async sendConnectionRequest(request: ConnectionRequest): Promise<boolean> {
+    await this.rateLimiter.waitForToken();
     console.log(`Sending connection request to ${request.profileId} with message: ${request.message}`);
     // Mock API call
     return true;
