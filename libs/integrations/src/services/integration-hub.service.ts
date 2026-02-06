@@ -12,19 +12,22 @@ export class IntegrationHubService {
   }
 
   // 48. Zapier App: Official submission logic (or webhook shim).
-  async zapierApp(triggerEvent: string, payload: any): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async zapierApp(_triggerEvent: string, _payload: unknown): Promise<string> {
     // Shim for Zapier webhook
     return 'hook-id-123';
   }
 
   // 49. Chrome Extension: Sidebar extension backend support.
-  async chromeExtensionSupport(url: string, userToken: string): Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async chromeExtensionSupport(url: string, _userToken: string): Promise<unknown> {
     // Enrich context for the visited URL
     return { domain: url, enrichment: { employees: 100 } };
   }
 
   // 50. API Keys: Public API management for developers.
-  async apiKeysManagement(action: 'CREATE' | 'REVOKE', userId: string): Promise<{ key?: string; status: string }> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async apiKeysManagement(action: 'CREATE' | 'REVOKE', _userId: string): Promise<{ key?: string; status: string }> {
     if (action === 'CREATE') {
       return { key: 'sk-live-123456', status: 'ACTIVE' };
     }
