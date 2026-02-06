@@ -1,0 +1,1 @@
+import { EventEmitter } from 'events'; import { Event } from './types'; class EventBus extends EventEmitter { subscribe(event: string, callback: (e: Event) => void) { this.on(event, callback); } publish(event: string, payload: any) { this.emit(event, { name: event, payload, timestamp: new Date() }); } } export const eventBus = new EventBus();

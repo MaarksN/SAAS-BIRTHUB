@@ -36,6 +36,7 @@ export class SDRService {
 
   // 2. Score em Tempo Real
   async getRealTimeScore(leadId: string) {
+    // Just a wrapper, but conceptually could fetch live behavioral data
     const score = await this.scoreLead(leadId);
     return score.score;
   }
@@ -43,49 +44,101 @@ export class SDRService {
   // 3. Fast Track Automático
   async checkFastTrack(leadId: string) {
     const score = await this.scoreLead(leadId);
-    return score.score > 80; // Threshold
+    const isFastTrack = score.score > 80;
+
+    if (isFastTrack) {
+        // Mock: Update status or notify
+        console.log(`[SDR] Lead ${leadId} is Fast Tracked!`);
+    }
+    return isFastTrack;
   }
 
   // 4. Cadência Multicanal Inteligente
   async getCadence(leadId: string) {
-    // Mock logic: return a default cadence
-    return { steps: ['Email 1', 'Call 1', 'LinkedIn Request'] };
+    // @ts-ignore
+    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    // Logic to pick cadence based on lead score/industry
+    const name = lead?.score && lead.score > 50 ? 'High Intent Cadence' : 'Nurture Cadence';
+
+    // @ts-ignore
+    let cadence = await prisma.cadence.findFirst({ where: { name } });
+
+    if (!cadence) {
+        // @ts-ignore
+        cadence = await prisma.cadence.create({
+            data: {
+                name,
+                steps: [
+                    { day: 0, channel: 'LINKEDIN', action: 'Connect' },
+                    { day: 2, channel: 'EMAIL', action: 'Value Prop' },
+                    { day: 4, channel: 'PHONE', action: 'Call' }
+                ]
+            }
+        });
+    }
+
+    return cadence;
   }
 
   // 5. Detecção de Intenção de Compra
-  async detectIntent(leadId: string) { return { intent: 'HIGH' }; }
+  async detectIntent(leadId: string) {
+    // Mock: Check recent website visits or downloads (simulated)
+    return { intent: 'HIGH', signals: ['Pricing Page Visit', 'Whitepaper Download'] };
+  }
 
   // 6. Copiloto de Objeções (Live)
   async handleObjection(text: string): Promise<IObjectionResponse> {
     const objections: Record<string, string> = {
-        "price": "Focus on ROI and value delivered.",
-        "competitor": "Highlight our unique AI integration.",
-        "timing": "Ask about their goals for next quarter."
+        "price": "It's an investment in efficiency. Our customers typically see 3x ROI in 6 months.",
+        "competitor": "We offer a unified platform, unlike X which requires multiple integrations.",
+        "timing": "Understandable. What are your main priorities for this quarter?",
+        "authority": "Who else should we involve in this conversation to align with strategic goals?"
     };
 
-    let response = "Listen and empathize.";
-    if (text.toLowerCase().includes('price') || text.toLowerCase().includes('expensive')) response = objections['price']!;
-    if (text.toLowerCase().includes('competitor') || text.toLowerCase().includes('other')) response = objections['competitor']!;
+    let response = "Could you tell me more about that concern?";
+    const lower = text.toLowerCase();
+
+    if (lower.includes('price') || lower.includes('cost') || lower.includes('expensive')) response = objections['price']!;
+    else if (lower.includes('competitor') || lower.includes('better') || lower.includes('use')) response = objections['competitor']!;
+    else if (lower.includes('now') || lower.includes('later') || lower.includes('quarter')) response = objections['timing']!;
+    else if (lower.includes('boss') || lower.includes('decision') || lower.includes('manager')) response = objections['authority']!;
 
     return { objection: text, response };
   }
 
   // 7. Script Dinâmico por Lead
-  async getScript(leadId: string) { return 'Script content...'; }
+  async getScript(leadId: string) {
+    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    return `Hi ${lead?.name || 'there'}, noticed you're at ${lead?.companyName}... we help companies like yours scale outbound...`;
+  }
 
   // 8. Detecção de Momento Ideal
   async getBestContactTime(leadId: string) {
-    // Heuristic: Tuesday/Thursday mornings
+    // Mock logic based on historical "connect" times
     const now = new Date();
-    // Logic to find next Tuesday/Thursday 10am
-    return now;
+    // Simulate "Next Tuesday at 10am"
+    const nextSlot = new Date(now);
+    nextSlot.setDate(now.getDate() + (2 + 7 - now.getDay()) % 7); // Next Tuesday
+    nextSlot.setHours(10, 0, 0, 0);
+    return nextSlot;
   }
 
   // 9. Gestão Automática de Follow-ups
-  async scheduleFollowUp(leadId: string) { return true; }
+  async scheduleFollowUp(leadId: string) {
+    // Mock creating a task
+    console.log(`[SDR] Scheduled follow-up for lead ${leadId}`);
+    return true;
+  }
 
   // 10. Prevenção de Ghosting
-  async predictGhosting(leadId: string) { return { risk: 0.2 }; }
+  async predictGhosting(leadId: string) {
+    // If no interaction in 7 days, risk is high
+    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    const daysSinceUpdate = (Date.now() - (lead?.updatedAt.getTime() || 0)) / (1000 * 3600 * 24);
+
+    const risk = daysSinceUpdate > 7 ? 0.8 : 0.1;
+    return { risk, reason: risk > 0.5 ? 'Lack of engagement' : 'Healthy' };
+  }
 
   // 11. Classificação Automática
   async classifyLead(leadId: string) { return 'QUALIFIED'; }
