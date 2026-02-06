@@ -6,6 +6,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// --- CORE ---
 model Organization {
   id        String   @id @default(cuid())
   name      String
@@ -15,6 +16,9 @@ model Organization {
   users     User[]
   leads     Lead[]
   deals     Deal[]
+  integrations IntegrationConfig[]
+  products  Product[]
+  workflows Workflow[]
 
   @@map("organizations")
 }
@@ -28,88 +32,162 @@ model User {
   organization   Organization @relation(fields: [organizationId], references: [id])
   deals          Deal[]
   activities     Activity[]
+  socialPosts    SocialPost[]
+  tickets        SupportTicket[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
   @@map("users")
 }
 
+// --- PROSPECTOR (LDR) ---
 model Lead {
   id             String   @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
-
-  // Basic Info
   firstName      String?
   lastName       String?
   email          String?
-  phone          String?
-  linkedinUrl    String?
-  role           String?
-
-  // Company Info
   companyName    String?
-  companyDomain  String?
-  industry       String?
-  employees      Int?
-
-  // Intelligence
-  status         String   @default("NEW") // NEW, ENRICHED, CONTACTED, QUALIFIED, DISQUALIFIED
+  status         String   @default("NEW")
   score          Int      @default(0)
-  techStack      Json?    // Array of strings
-  tags           Json?    // Array of strings
-
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   @@map("leads")
 }
 
+// --- HUB (CRM/AE) ---
 model Deal {
   id             String   @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
   ownerId        String
   owner          User     @relation(fields: [ownerId], references: [id])
-
   title          String
   value          Float    @default(0)
-  currency       String   @default("BRL")
-  stage          String   @default("DISCOVERY") // DISCOVERY, DEMO, NEGOTIATION, CLOSED_WON, CLOSED_LOST
-  probability    Int      @default(20)
-  expectedCloseDate DateTime?
-
+  stage          String   @default("DISCOVERY")
+  pipelineId     String?
+  pipeline       Pipeline? @relation(fields: [pipelineId], references: [id])
   activities     Activity[]
-
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   @@map("deals")
 }
 
+model Pipeline {
+  id             String   @id @default(cuid())
+  name           String
+  stages         Json     // Array of Stage objects
+  deals          Deal[]
+  createdAt      DateTime @default(now())
+
+  @@map("pipelines")
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  price          Float
+  currency       String   @default("BRL")
+  createdAt      DateTime @default(now())
+
+  @@map("products")
+}
+
+// --- ACTIVITIES & VOICE ---
 model Activity {
   id          String   @id @default(cuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   dealId      String?
   deal        Deal?    @relation(fields: [dealId], references: [id])
-
-  type        String   // CALL, EMAIL, MEETING, NOTE, TASK
-  subject     String?
+  type        String
   content     String?  @db.Text
-  status      String   @default("DONE") // DONE, PENDING
-
+  recording   CallRecording?
   createdAt   DateTime @default(now())
 
   @@map("activities")
 }
 
+model CallRecording {
+  id          String   @id @default(cuid())
+  activityId  String   @unique
+  activity    Activity @relation(fields: [activityId], references: [id])
+  url         String
+  transcription String? @db.Text
+  summary     String?  @db.Text
+  sentiment   String?
+  duration    Int?
+  createdAt   DateTime @default(now())
+
+  @@map("call_recordings")
+}
+
+// --- SOCIAL ---
+model SocialPost {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  content     String   @db.Text
+  platform    String   // LINKEDIN, TWITTER
+  status      String   // DRAFT, SCHEDULED, PUBLISHED
+  scheduledAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("social_posts")
+}
+
+// --- AUTOMATION ---
+model Workflow {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  isActive       Boolean  @default(true)
+  triggerType    String
+  steps          Json     // Array of Step objects
+  createdAt      DateTime @default(now())
+
+  @@map("workflows")
+}
+
+// --- SUPPORT ---
+model SupportTicket {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subject     String
+  status      String   @default("OPEN")
+  priority    String   @default("NORMAL")
+  createdAt   DateTime @default(now())
+
+  @@map("support_tickets")
+}
+
+// --- INTEGRATIONS ---
+model IntegrationConfig {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  provider       String   // HUBSPOT, SALESFORCE, SLACK
+  apiKey         String?
+  webhookUrl     String?
+  isEnabled      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@map("integration_configs")
+}
+
+// --- LOGS ---
 model EnrichmentHistory {
   id          String   @id @default(cuid())
-  target      String   // Email or Domain or CNPJ
+  target      String
   source      String
-  status      String   // SUCCESS, FAILED
-  cost        Float    @default(0)
+  status      String
   payload     Json
   createdAt   DateTime @default(now())
 

@@ -16,3 +16,4 @@ export * from './components/EmptyState';
 export * from './components/KeyboardShortcuts';
 export * from './components/OnboardingTour';
 export * from './components/Billing';
+export * from './components/smart/SmartComponents';

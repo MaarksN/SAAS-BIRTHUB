@@ -4,3 +4,4 @@ export * from './context';
 export * from './features';
 export * from './guard';
 export * from './logger';
+export * from './services/core.service';

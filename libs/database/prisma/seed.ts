@@ -5,72 +5,32 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting Seed...');
 
-  // 1. Create Organization
   const org = await prisma.organization.create({
-    data: {
-      name: 'Acme Corp',
-      plan: 'ENTERPRISE',
-    },
+    data: { name: 'Acme Corp', plan: 'ENTERPRISE' },
   });
-  console.log(`✅ Created Org: ${org.name}`);
 
-  // 2. Create User
   const user = await prisma.user.create({
-    data: {
-      email: 'admin@salesos.com',
-      name: 'Admin User',
-      role: 'ADMIN',
-      organizationId: org.id,
-    },
+    data: { email: 'admin@salesos.com', name: 'Admin', role: 'ADMIN', organizationId: org.id },
   });
-  console.log(`✅ Created User: ${user.email}`);
 
-  // 3. Create Leads
-  await prisma.lead.createMany({
-    data: [
-      {
-        organizationId: org.id,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@tech.com',
-        companyName: 'Tech Inc',
-        status: 'NEW',
-        score: 45
-      },
-      {
-        organizationId: org.id,
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane@fintech.com',
-        companyName: 'Fintech Solutions',
-        status: 'QUALIFIED',
-        score: 88
-      }
-    ]
-  });
-  console.log(`✅ Created Leads`);
-
-  // 4. Create Deals
-  await prisma.deal.create({
+  await prisma.pipeline.create({
     data: {
-      organizationId: org.id,
-      ownerId: user.id,
-      title: 'Enterprise License - Tech Inc',
-      value: 50000,
-      stage: 'NEGOTIATION',
-      probability: 70
+      name: 'Default Pipeline',
+      stages: ["Discovery", "Demo", "Negotiation", "Closed Won"]
     }
   });
-  console.log(`✅ Created Deal`);
+
+  await prisma.product.create({
+    data: {
+      organizationId: org.id,
+      name: 'SalesOS License',
+      price: 1000
+    }
+  });
 
   console.log('🚀 Seed Completed!');
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .catch((e) => { console.error(e); process.exit(1); })
+  .finally(async () => { await prisma.$disconnect(); });
