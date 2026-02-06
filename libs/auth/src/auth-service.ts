@@ -1,4 +1,4 @@
-import { Role } from '@salesos/core';
+import { Role } from '@salesos/core/rbac';
 
 export interface UserSession {
   userId: string;

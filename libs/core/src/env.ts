@@ -6,7 +6,7 @@ const envSchema = z.object({
 });
 
 // Allow skipping validation for now if needed, e.g. during specific build steps where env might not be present
-const skipValidation = !!process.env.SKIP_ENV_VALIDATION;
+const skipValidation = Boolean(process.env.SKIP_ENV_VALIDATION);
 
 const _env = envSchema.safeParse(process.env);
 
@@ -15,4 +15,4 @@ if (!skipValidation && !_env.success) {
   throw new Error('Invalid environment variables');
 }
 
-export const env = _env.success ? _env.data : (process.env as any);
+export const env = _env.success ? _env.data : (process.env as unknown as z.infer<typeof envSchema>);
