@@ -14,3 +14,5 @@ export * from './components/Fab';
 export * from './components/Confetti';
 export * from './components/EmptyState';
 export * from './components/KeyboardShortcuts';
+export * from './components/OnboardingTour';
+export * from './components/Billing';
