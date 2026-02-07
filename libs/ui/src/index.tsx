@@ -20,3 +20,5 @@ export * from './components/kanban-board-simple';
 export * from './components/tag-input';
 export * from './components/error-boundary';
 export { default as useLocalStorage } from './hooks/use-local-storage';
+export * from './components/bulk-actions-toolbar';
+export * from './components/theme-color-picker';

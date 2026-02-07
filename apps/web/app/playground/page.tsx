@@ -9,8 +9,12 @@ import {
   toast,
   Button,
   Card,
-  useLocalStorage
+  useLocalStorage,
+  BulkActionsToolbar,
+  ThemeColorPicker
 } from '@salesos/ui';
+import { leadSchema } from '../../lib/schemas';
+import { createLogEntry } from '../../lib/audit';
 import { parseLeadsFromCSV, LeadCSV } from '../../lib/csv-import';
 import { validateCNPJ, fetchCEP } from '../../lib/brasil-api';
 import { getWhatsAppLink } from '../../lib/whatsapp';
@@ -23,8 +27,11 @@ export default function PlaygroundPage() {
     { id: '2', companyName: 'Globex', sector: 'Finance', location: 'RJ', score: 60, status: 'negotiation', createdAt: '', tags: [] },
   ]);
 
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [cnpj, setCnpj] = useState('');
   const [cep, setCep] = useState('');
+  const [logs, setLogs] = useLocalStorage<string[]>('playground_logs', []);
+  const [form, setForm] = useState({ companyName: '', email: '', score: 50 });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,6 +39,10 @@ export default function PlaygroundPage() {
       try {
         const newLeads = await parseLeadsFromCSV(file);
         setLeads([...leads, ...newLeads]);
+
+        const log = createLogEntry(`Imported ${newLeads.length} leads from CSV`);
+        setLogs([log, ...logs]);
+
         toast.success(`${newLeads.length} leads imported!`);
       } catch (err) {
         toast.error('Failed to import CSV');
@@ -60,10 +71,58 @@ export default function PlaygroundPage() {
   const handleWon = (lead: LeadCSV) => {
       triggerConfetti();
       toast.success(`Won deal with ${lead.companyName}!`);
+      const log = createLogEntry(`Deal won: ${lead.companyName}`);
+      setLogs([log, ...logs]);
+  };
+
+  const toggleSelection = (id: string) => {
+     const newSet = new Set(selectedIds);
+     if (newSet.has(id)) newSet.delete(id);
+     else newSet.add(id);
+     setSelectedIds(newSet);
+  };
+
+  const deleteSelected = () => {
+     if (!confirm(`Tem certeza que deseja apagar ${selectedIds.size} itens?`)) return;
+     setLeads(leads.filter(l => !selectedIds.has(l.id)));
+
+     const log = createLogEntry(`Deleted ${selectedIds.size} leads`);
+     setLogs([log, ...logs]);
+
+     setSelectedIds(new Set());
+     toast.success("Itens removidos.");
+  };
+
+  const handleAddLead = () => {
+    try {
+        const valid = leadSchema.parse({ ...form, score: Number(form.score), website: '' });
+        const newLead: LeadCSV = {
+            id: crypto.randomUUID(),
+            companyName: valid.companyName,
+            sector: 'General',
+            location: 'Unknown',
+            score: valid.score,
+            status: 'new',
+            createdAt: new Date().toISOString(),
+            tags: []
+        };
+        setLeads([...leads, newLead]);
+        toast.success("Lead added!");
+        setForm({ companyName: '', email: '', score: 50 });
+    } catch (err: any) {
+        if (err.errors) {
+            toast.error(err.errors[0].message);
+        } else {
+            toast.error("Validation failed");
+        }
+    }
   };
 
   const renderCard = (lead: LeadCSV) => (
-    <Card className="p-4 shadow-sm bg-white dark:bg-slate-900 border space-y-2">
+    <Card className={`p-4 shadow-sm bg-white dark:bg-slate-900 border space-y-2 relative ${selectedIds.has(lead.id) ? 'border-blue-500 ring-2 ring-blue-200' : ''}`}>
+      <div className="absolute top-2 right-2">
+         <input type="checkbox" checked={selectedIds.has(lead.id)} onChange={() => toggleSelection(lead.id)} />
+      </div>
       <div className="flex items-center gap-2">
         <AvatarHash name={lead.companyName} />
         <div>
@@ -83,28 +142,26 @@ export default function PlaygroundPage() {
   );
 
   return (
-    <div className="p-8 space-y-8">
-      <h1 className="text-2xl font-bold">Frontend Chassis & Engine Playground</h1>
-
-      <section className="space-y-4 border p-4 rounded">
-        <h2 className="font-bold">1. CSV Import</h2>
-        <input type="file" accept=".csv" onChange={handleFileUpload} />
-      </section>
-
-      <section className="space-y-4 border p-4 rounded">
-        <h2 className="font-bold">2. Brasil API</h2>
-        <div className="flex gap-2">
-          <input value={cnpj} onChange={e => setCnpj(e.target.value)} placeholder="CNPJ" className="border p-1" />
-          <Button onClick={handleValidateCNPJ}>Validate CNPJ</Button>
+    <div className="p-8 space-y-8 pb-24">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Frontend Chassis & Engine Playground</h1>
+        <div className="flex items-center gap-2">
+            <span className="text-sm">Theme Color:</span>
+            <ThemeColorPicker />
         </div>
+      </div>
+
+      <section className="space-y-4 border p-4 rounded bg-white/5">
+        <h2 className="font-bold">Zod Validation & Create Lead</h2>
         <div className="flex gap-2">
-            <input value={cep} onChange={e => setCep(e.target.value)} placeholder="CEP" className="border p-1" />
-            <Button onClick={handleFetchCEP}>Fetch CEP</Button>
+            <input className="border p-2 rounded" placeholder="Company Name" value={form.companyName} onChange={e => setForm({...form, companyName: e.target.value})} />
+            <input className="border p-2 rounded" placeholder="Score (0-100)" type="number" value={form.score} onChange={e => setForm({...form, score: Number(e.target.value)})} />
+            <Button onClick={handleAddLead}>Add Lead</Button>
         </div>
       </section>
 
-      <section className="space-y-4 border p-4 rounded">
-        <h2 className="font-bold">3. Kanban Board (with Skeleton if empty)</h2>
+      <section className="space-y-4 border p-4 rounded bg-white/5">
+        <h2 className="font-bold">Kanban Board (Select items to see Bulk Actions)</h2>
         {leads.length === 0 ? (
            <div className="flex gap-4">
              <Skeleton className="h-64 w-64" />
@@ -120,10 +177,19 @@ export default function PlaygroundPage() {
         )}
       </section>
 
-      <section className="space-y-4 border p-4 rounded">
-          <h2 className="font-bold">4. Tag Input</h2>
-          <TagInput tags={['demo']} onChange={(tags) => toast.success(`Tags: ${tags.join(', ')}`)} />
+      <section className="space-y-4 border p-4 rounded bg-white/5">
+         <h2 className="font-bold">Audit Logs (History)</h2>
+         <ul className="text-sm text-slate-600 font-mono max-h-40 overflow-auto bg-slate-50 p-2 rounded">
+             {logs.map((l, i) => <li key={i}>{l}</li>)}
+             {logs.length === 0 && <li>No logs yet.</li>}
+         </ul>
       </section>
+
+      <BulkActionsToolbar
+        selectedCount={selectedIds.size}
+        onDelete={deleteSelected}
+        onCancel={() => setSelectedIds(new Set())}
+      />
     </div>
   );
 }
