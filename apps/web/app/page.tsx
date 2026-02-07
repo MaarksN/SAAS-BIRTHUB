@@ -3,60 +3,77 @@ import React from "react";
 import { Button, Input, Card, CardContent } from "@salesos/ui";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const router = useRouter();
+import React, { useEffect, useState } from 'react';
+import { LinkedInAutomation, EnrichmentService } from '@salesos/social';
+import { AuditService, WhiteLabelService } from '@salesos/enterprise';
+import { ReferralSystem, CollaborationService, OnboardingService } from '@salesos/growth';
+import { CommandPalette, ZeroInbox, usePredictivePrefetch } from '@salesos/ui';
+import { mockUser } from '@salesos/auth';
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulação de login
-    router.push("/dashboard");
-  };
+// Instantiate services outside component to persist state across re-renders (Singleton pattern for demo)
+const linkedIn = new LinkedInAutomation();
+const enrichment = new EnrichmentService();
+const audit = new AuditService();
+const branding = new WhiteLabelService();
+const referral = new ReferralSystem();
+const collab = new CollaborationService();
+const onboarding = new OnboardingService();
+
+export default function Page() {
+  const [companyName, setCompanyName] = useState(branding.getConfig().companyName);
+
+  // Cycle 20 (Hook)
+  const prefetchData = usePredictivePrefetch(async () => {
+    return "Prefetched Data Loaded!";
+  }, '.prefetch-trigger');
+
+  useEffect(() => {
+    collab.updatePresence(mockUser.id, '/dashboard');
+    branding.updateConfig({ companyName: 'My Agency' });
+    setCompanyName(branding.getConfig().companyName);
+  }, []);
+
+  const commands = [
+    { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
+    { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
+    { id: '3', name: 'Start Tour', action: () => console.log(onboarding.getTour('home')) },
+  ];
+
+  const tasks = [
+    { id: '1', title: 'Review new leads', done: false },
+    { id: '2', title: 'Email follow-up', done: false },
+  ];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4">
-      <div className="z-10 max-w-5xl w-full flex flex-col items-center gap-8">
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>{companyName} - Cycles 16-20 Demo</h1>
 
-        <div className="text-center space-y-4">
-          <h1 className="text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-            SalesOS Ultimate
-          </h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            A plataforma unificada de inteligência comercial.
-            Do enriquecimento de leads (LDR) ao fechamento (AE) em um só lugar.
-          </p>
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 16: Social Selling</h2>
+        <button onClick={() => enrichment.enrichProfile('jules', 'linkedin')}>
+          Enrich Profile (Check Console)
+        </button>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 19: Growth</h2>
+        <p>Referral Code: {referral.generateCode(mockUser.id)}</p>
+        <p>Active User: {mockUser.name} ({mockUser.role})</p>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 20: Polish</h2>
+        <div className="prefetch-trigger" style={{ padding: '10px', border: '1px solid #ccc', display: 'inline-block' }}>
+          Hover me to Prefetch
         </div>
+        {prefetchData && <p style={{ color: 'green' }}>{prefetchData}</p>}
 
-        <Card className="w-full max-w-md bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-center text-white">Acesso à Plataforma</h2>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">E-mail Corporativo</label>
-                <Input
-                  type="email"
-                  placeholder="voce@empresa.com"
-                  className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Senha</label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="bg-slate-900/50 border-slate-600 text-white"
-                />
-              </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 mt-4">
-                Entrar no Sistema
-              </Button>
-            </form>
-            <div className="mt-6 text-center text-xs text-slate-500">
-              Protegido por criptografia de ponta a ponta. SOC2 Compliant.
-            </div>
-          </CardContent>
-        </Card>
+        <div style={{ marginTop: '20px' }}>
+          <ZeroInbox initialTasks={tasks} />
+        </div>
+      </section>
 
-      </div>
-    </main>
+      <CommandPalette commands={commands} />
+    </div>
   );
 }
