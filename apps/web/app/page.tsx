@@ -1,49 +1,79 @@
-'use client';
+"use client";
+import React from "react";
+import { Button, Input, Card, CardContent } from "@salesos/ui";
+import { useRouter } from "next/navigation";
 
-import React from 'react';
-import { LinkedInAutomation } from '@salesos/social';
-import { AuditService } from '@salesos/enterprise';
-import { ReferralSystem } from '@salesos/growth';
-import { CommandPalette, Button, Input } from '@salesos/ui';
-import { AppError } from '@salesos/core';
+import React, { useEffect, useState } from 'react';
+import { LinkedInAutomation, EnrichmentService } from '@salesos/social';
+import { AuditService, WhiteLabelService } from '@salesos/enterprise';
+import { ReferralSystem, CollaborationService, OnboardingService } from '@salesos/growth';
+import { CommandPalette, ZeroInbox, usePredictivePrefetch } from '@salesos/ui';
+import { mockUser } from '@salesos/auth';
 
-const commands = [
-  { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
-  { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
-];
+// Instantiate services outside component to persist state across re-renders (Singleton pattern for demo)
+const linkedIn = new LinkedInAutomation();
+const enrichment = new EnrichmentService();
+const audit = new AuditService();
+const branding = new WhiteLabelService();
+const referral = new ReferralSystem();
+const collab = new CollaborationService();
+const onboarding = new OnboardingService();
 
-export default function Home() {
-  // Just to demonstrate usage (these would normally be used in specific components)
-  const linkedIn = new LinkedInAutomation();
-  const audit = new AuditService();
-  const referral = new ReferralSystem();
+export default function Page() {
+  const [companyName, setCompanyName] = useState(branding.getConfig().companyName);
+
+  // Cycle 20 (Hook)
+  const prefetchData = usePredictivePrefetch(async () => {
+    return "Prefetched Data Loaded!";
+  }, '.prefetch-trigger');
+
+  useEffect(() => {
+    collab.updatePresence(mockUser.id, '/dashboard');
+    branding.updateConfig({ companyName: 'My Agency' });
+    setCompanyName(branding.getConfig().companyName);
+  }, []);
+
+  const commands = [
+    { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
+    { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
+    { id: '3', name: 'Start Tour', action: () => console.log(onboarding.getTour('home')) },
+  ];
+
+  const tasks = [
+    { id: '1', title: 'Review new leads', done: false },
+    { id: '2', title: 'Email follow-up', done: false },
+  ];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-slate-50">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          SalesOS <span className="text-blue-600">Ultimate</span>
-        </h1>
-        <div className="hidden">
-            {/* Keeping references to demonstrate libraries are linked */}
-            <CommandPalette commands={commands} />
-        </div>
-      </div>
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>{companyName} - Cycles 16-20 Demo</h1>
 
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">Login to Prospector</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <Input type="email" placeholder="sales@example.com" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <Input type="password" placeholder="••••••••" />
-          </div>
-          <Button className="w-full">Sign In</Button>
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 16: Social Selling</h2>
+        <button onClick={() => enrichment.enrichProfile('jules', 'linkedin')}>
+          Enrich Profile (Check Console)
+        </button>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 19: Growth</h2>
+        <p>Referral Code: {referral.generateCode(mockUser.id)}</p>
+        <p>Active User: {mockUser.name} ({mockUser.role})</p>
+      </section>
+
+      <section style={{ marginBottom: '20px' }}>
+        <h2>Cycle 20: Polish</h2>
+        <div className="prefetch-trigger" style={{ padding: '10px', border: '1px solid #ccc', display: 'inline-block' }}>
+          Hover me to Prefetch
         </div>
-      </div>
-    </main>
+        {prefetchData && <p style={{ color: 'green' }}>{prefetchData}</p>}
+
+        <div style={{ marginTop: '20px' }}>
+          <ZeroInbox initialTasks={tasks} />
+        </div>
+      </section>
+
+      <CommandPalette commands={commands} />
+    </div>
   );
 }

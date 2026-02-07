@@ -34,7 +34,7 @@ export interface ApiResponse<T> {
   meta?: ApiResponseMeta;
 }
 
-export function successResponse<T>(data: T, meta?: ApiResponseMeta): ApiResponse<T> {
+export function successResponse<T>(data: T, meta?: PaginationMetaDto): ApiResponse<T> {
   return {
     success: true,
     data,

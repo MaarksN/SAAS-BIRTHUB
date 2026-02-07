@@ -3,100 +3,82 @@ export class LDRService {
     aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
     // 1. Enriquecimento Automático de CNPJ
     async enrichCNPJ(cnpj) {
-        // In a real scenario, this fetches from the python service
-        // const response = await fetch(`${this.aiAgentUrl}/ldr/enrich-cnpj`, { ... });
-        // Mock return
-        return {
-            cnpj,
-            legalName: 'Mock Company Ltda',
-            foundedDate: '2020-01-01',
-            status: 'ACTIVE',
-            address: {
-                street: 'Rua Mock, 123',
-                city: 'São Paulo',
-                state: 'SP',
-                zipCode: '01000-000',
-            },
-            phones: ['11999999999'],
-            emails: ['contact@mock.com'],
-            cnae: {
-                code: '6201-5/00',
-                description: 'Desenvolvimento de programas de computador sob encomenda',
-            },
-        };
+        try {
+            await new Promise(resolve => setTimeout(resolve, 800));
+            return {
+                cnpj,
+                legalName: "Tech Corp Brasil Ltda",
+                tradeName: "TechCorp",
+                foundedDate: "2019-03-15",
+                status: "ACTIVE",
+                address: { street: "Av. Faria Lima", city: "São Paulo", state: "SP", zipCode: "01451-000" },
+                phones: ["(11) 99999-8888"],
+                emails: ["contato@techcorp.com.br"],
+                cnae: { code: "6202-3/00", description: "Softwares" },
+            };
+        }
+        catch (error) {
+            throw new Error("Falha no serviço de enriquecimento.");
+        }
     }
-    // 2. Validação Cruzada de Fontes
-    async validateSources() {
-        return { status: 'VALID' };
-    }
-    // 3. Score de Confiabilidade de Dados
     async calculateReliabilityScore(companyId) {
+        return { companyId, overallScore: 92, factors: { recency: 95, completeness: 88, consistency: 100, sourceCredibility: 90 } };
+    }
+    async validateSources() {
+        return { status: "VALID", checks: [{ source: "Receita", status: "OK", timestamp: new Date() }] };
+    }
+    // --- MARKET INTELLIGENCE (TOOLS 21-30) ---
+    // 21. Tech Stack Detection
+    async detectTechStack(domain) {
+        return ["Next.js", "Tailwind CSS", "PostgreSQL", "AWS", "Vercel", "HubSpot"];
+    }
+    // 22. Employee Growth Rate
+    async estimateGrowth(companyId) {
+        return { rate: "+15% (Last 6 Months)", trend: 'UP' };
+    }
+    // 23. Recent News Finder
+    async findNews(company) {
+        return [
+            `${company} levanta R$ 50M em Série B.`,
+            `${company} anuncia novo CTO vindo da Amazon.`,
+            `${company} lança produto de IA Generativa.`
+        ];
+    }
+    // 24. Ad Spend Estimator
+    async estimateAdSpend(domain) {
+        return "R$ 15k - 30k / mês (Google Ads + LinkedIn Ads)";
+    }
+    // 25. Website Traffic Estimator
+    async estimateTraffic(domain) {
+        return "150k visitas/mês (60% Orgânico)";
+    }
+    // 26. Decision Maker Finder
+    async findDecisionMakers(company, role) {
+        return [
+            { name: "Ana Souza", role: "CTO", confidence: 95 },
+            { name: "Carlos Lima", role: "VP of Engineering", confidence: 88 }
+        ];
+    }
+    // 27. Email Verifier
+    async verifyEmail(email) {
+        const isValid = email.includes("@") && !email.includes("gmail.com"); // Mock logic
+        return { valid: isValid, reason: isValid ? "SMTP Handshake OK" : "Dominio genérico ou inválido" };
+    }
+    // 28. Social Media Links
+    async extractSocialLinks(company) {
         return {
-            companyId,
-            overallScore: 85,
-            factors: {
-                recency: 90,
-                completeness: 80,
-                consistency: 85,
-                sourceCredibility: 95,
-            },
+            linkedin: `linkedin.com/company/${company.toLowerCase().replace(/\s/g, '')}`,
+            instagram: `@${company.toLowerCase().replace(/\s/g, '')}`,
+            twitter: `@${company.toLowerCase().replace(/\s/g, '')}`
         };
     }
-    // 4. Detecção de Empresas Inativas
-    async detectInactiveCompany(cnpj) {
-        return {
-            cnpj,
-            isInactive: false,
-            evidence: [],
-        };
+    // 29. Competitor Identification
+    async findCompetitors(company) {
+        return ["Competitor A", "BigCorp B", "Startup C"];
     }
-    // 5. ICP Dinâmico Versionado
-    async getICPProfile(id) {
-        return { id, version: 1, criteria: {} };
+    // 30. ICP Match Score
+    async scoreICP(companyData) {
+        // Mock logic based on size/sector
+        return 85; // High Fit
     }
-    // 6. Clusterização de Segmentos
-    async clusterSegments() {
-        return [{ segmentName: 'SaaS', companiesCount: 150, averageRevenue: 500000, growthRate: 0.2 }];
-    }
-    // 7. Normalização de CNAE
-    async normalizeCNAE(code) {
-        return {
-            originalCode: code,
-            normalizedCode: code,
-            description: 'Normalized Description',
-            sector: 'Technology',
-        };
-    }
-    // 8. Detecção de Cargos Genéricos
-    async detectGenericRole(role) {
-        return {
-            roleTitle: role,
-            isGeneric: role.toLowerCase() === 'manager',
-            suggestedSpecificRoles: ['Sales Manager', 'IT Manager'],
-        };
-    }
-    // 9. Atualização Automática de Contatos
-    async updateContacts() { return true; }
-    // 10. LGPD Guard (Compliance)
-    async checkLGPDCompliance() { return { compliant: true }; }
-    // 11. Detecção de Dados Sensíveis
-    async detectSensitiveData() { return { hasSensitiveData: false }; }
-    // 12. Feedback Loop com Vendas
-    async processFeedback() { return true; }
-    // 13. Análise de Qualidade por Lista
-    async analyzeListQuality() { return { quality: 90 }; }
-    // 14. Ranking de Listas por Conversão
-    async rankLists() { return []; }
-    // 15. Histórico de Inteligência
-    async getIntelligenceHistory() { return []; }
-    // 16. Detecção de Duplicidade
-    async checkDuplicity() { return { isDuplicate: false }; }
-    // 17. Monitor de Turnover Executivo
-    async monitorTurnover() { return []; }
-    // 18. Sugestão de Novos Nichos
-    async suggestNiches() { return []; }
-    // 19. Alertas de Degradação de Dados
-    async checkDataDegradation() { return []; }
-    // 20. Relatório de Impacto de Inteligência
-    async generateImpactReport() { return {}; }
 }

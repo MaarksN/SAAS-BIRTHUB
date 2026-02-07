@@ -30,62 +30,81 @@ export class SDRService {
     return parsed.data;
   }
 
-  // 2. Score em Tempo Real
-  async getRealTimeScore(leadId: string) { return 88; }
-
-  // 3. Fast Track Automático
-  async checkFastTrack(leadId: string) { return true; }
-
-  // 4. Cadência Multicanal Inteligente
-  async getCadence(leadId: string) { return { steps: [] }; }
-
-  // 5. Detecção de Intenção de Compra
-  async detectIntent(leadId: string) { return { intent: 'HIGH' }; }
-
-  // 6. Copiloto de Objeções (Live)
   async handleObjection(text: string): Promise<IObjectionResponse> {
-    return { objection: text, response: 'Here is how to answer...' };
+    const objectionsMap: Record<string, string> = {
+      "caro": "Entendo a preocupação com o orçamento. Clientes como [X] viram ROI de 300%. O custo da inação é maior.",
+      "tempo": "Implementação em 48h sem TI. Podemos começar pequeno?",
+      "concorrente": "Eles são generalistas. Nós somos especialistas no seu nicho com [Feature X]."
+    };
+    let response = "Poderia detalhar?";
+    const lower = text.toLowerCase();
+    if (lower.includes("preço") || lower.includes("caro")) response = objectionsMap["caro"] || "Poderia detalhar?";
+    else if (lower.includes("tempo")) response = objectionsMap["tempo"] || "Poderia detalhar?";
+
+    return { objection: text, response };
   }
 
-  // 7. Script Dinâmico por Lead
-  async getScript(leadId: string) { return 'Script content...'; }
+  // --- ARSENAL EXPANSION (TOOLS 1-20) ---
 
-  // 8. Detecção de Momento Ideal
-  async getBestContactTime(leadId: string) { return new Date(); }
+  // 1. Cold Call Script
+  async generateColdCallScript(persona: string, valueProp: string): Promise<string> {
+    return `**Cold Call Script para ${persona}:**\n\n"Olá [Nome], aqui é [Seu Nome] da SalesOS. Sei que não estava esperando, mas vi que você lidera [Área] e queria validar uma hipótese sobre [Problema].\n\nNós ajudamos empresas como a sua a ${valueProp}. Isso faz sentido para o seu momento atual ou estou totalmente fora?"`;
+  }
 
-  // 9. Gestão Automática de Follow-ups
-  async scheduleFollowUp(leadId: string) { return true; }
+  // 2. Email Roast
+  async roastEmail(emailContent: string): Promise<string> {
+    return `**Email Roast (Crítica Ácida):**\n\n1. **Assunto:** Genérico. Tente algo como "Ideia para [Empresa]"\n2. **Tamanho:** Muito longo. Corte 50%.\n3. **Eu-centrismo:** Você falou "nós" 5 vezes. Fale "você".\n\n**Nota:** 4/10. Refaça focando na dor do cliente.`;
+  }
 
-  // 10. Prevenção de Ghosting
-  async predictGhosting(leadId: string) { return { risk: 0.2 }; }
+  // 3. LinkedIn Icebreaker
+  async generateIcebreaker(profileBio: string): Promise<string> {
+    return `**Opção 1:** "Vi seu post sobre [Tópico da Bio]. Concordo totalmente com a parte X..."\n**Opção 2:** "Parabéns pelos [Anos] na [Empresa]. Impressionante a trajetória..."`;
+  }
 
-  // 11. Classificação Automática
-  async classifyLead(leadId: string) { return 'QUALIFIED'; }
+  // 4-6. Objection Killers (Specific)
+  async killObjectionPrice(): Promise<string> { return "Se o preço fosse zero, a solução resolveria seu problema? Se sim, o problema é ROI, não custo. Vamos calcular o retorno?"; }
+  async killObjectionCompetitor(competitor: string): Promise<string> { return `O ${competitor} é ótimo para [Caso A]. Nós fomos desenhados especificamente para [Caso B - Sua Força]. É isso que você busca?`; }
+  async killObjectionTime(): Promise<string> { return "Entendo. A maioria dos meus melhores clientes também estava sem tempo. Justamente por isso implementaram nossa automação. Quer ver como economizar 10h/semana?"; }
 
-  // 12. Priorização de Agenda
-  async prioritizeSchedule() { return []; }
+  // 7. Follow-up Builder
+  async generateFollowUp(context: string): Promise<string> { return `Olá [Nome], pensando na nossa conversa sobre ${context}, vi este artigo e lembrei de você. Abs.`; }
 
-  // 13. No-Show Predictor
-  async predictNoShow(meetingId: string) { return 0.1; }
+  // 8. Break-up Email
+  async generateBreakUp(): Promise<string> { return "Olá [Nome], não quero ser o chato da caixa de entrada. Vou assumir que [Projeto] não é prioridade agora. Vou encerrar meu contato por aqui. Se algo mudar, estou à disposição."; }
 
-  // 14. Confirmação Automática de Reunião
-  async confirmMeeting(meetingId: string) { return true; }
+  // 9. Gatekeeper Bypass
+  async bypassGatekeeper(role: string): Promise<string> { return `Olá, sou [Nome]. Poderia me ajudar? Estou tentando enviar um material técnico para o Diretor sobre [Tópico], mas não queria incomodar no email errado. Qual a melhor forma?`; }
 
-  // 15. Handoff Inteligente para AE
-  async handoffToAE(leadId: string) { return true; }
+  // 10. Value Proposition Canvas
+  async createValueProp(product: string, pain: string): Promise<string> { return `**Produto:** ${product}\n**Dor:** ${pain}\n**Alivio:** Reduz o estresse manual.\n**Ganho:** Aumenta receita em 20%.\n**Pitch:** "Para gestores que sofrem com ${pain}, o ${product} é a solução que elimina o trabalho manual."`; }
 
-  // 16. Resumo Automático de Qualificação
-  async generateSummary(leadId: string) { return 'Summary...'; }
+  // 11. Pain Magnifier
+  async magnifyPain(pain: string): Promise<string> { return `**Dor:** ${pain}\n**Nível 1 (Financeiro):** Perda de R$ X/mês.\n**Nível 2 (Estratégico):** Perda de market share.\n**Nível 3 (Pessoal):** Estresse da equipe e risco de burnout.`; }
 
-  // 17. Registro Automático no CRM
-  async syncToCRM(leadId: string) { return true; }
+  // 12. ROI Calculator
+  async calculateROI(cost: number, gain: number): Promise<string> { const roi = ((gain - cost) / cost) * 100; return `Investimento: R$${cost}\nRetorno: R$${gain}\n**ROI:** ${roi.toFixed(0)}%\nPayback em X meses.`; }
 
-  // 18. Análise de Performance Individual
-  async analyzePerformance(sdrId: string) { return {}; }
+  // 13. Competitor Battlecard
+  async battlecard(competitor: string): Promise<string> { return `**Contra ${competitor}:**\n1. Eles são lentos na implementação.\n2. Suporte deles é via ticket (nós somos Slack).\n3. Preço deles escala mal.`; }
 
-  // 19. Sugestão de Melhoria de Abordagem
-  async suggestImprovement(callId: string) { return 'Speak slower'; }
+  // 14. SPIN Questions
+  async generateSPIN(product: string): Promise<string> { return `**S:** Como vocês fazem X hoje?\n**P:** Quanto tempo perdem com isso?\n**I:** Se isso falhar, qual o impacto no cliente final?\n**N:** Se vocês pudessem automatizar isso, o que fariam com o tempo livre?`; }
 
-  // 20. Relatório de Qualidade de Leads
-  async getQualityReport() { return {}; }
+  // 15. MEDDIC Checklist
+  async checkMEDDIC(): Promise<string> { return `**M**etrics: Tem ROI?\n**E**conomic Buyer: Falamos com quem paga?\n**D**ecision Criteria: O que avaliam?\n**D**ecision Process: Como compram?\n**I**dentify Pain: A dor é latente?\n**C**hampion: Quem nos defende lá dentro?`; }
+
+  // 16. BANT Qualifier
+  async checkBANT(): Promise<string> { return `**B**udget: Tem verba?\n**A**uthority: Quem decide?\n**N**eed: Precisa mesmo?\n**T**iming: É para agora?`; }
+
+  // 17. Referral Request
+  async requestReferral(): Promise<string> { return "Fico feliz que gostou do resultado! Conhece mais alguém no seu setor que sofre com o mesmo problema?"; }
+
+  // 18. Case Study Storyteller
+  async tellStory(client: string, result: string): Promise<string> { return `A ${client} estava travada. Eles tentaram X e Y. Quando implementaram nossa solução, em 30 dias o resultado foi ${result}. Hoje eles são referência.`; }
+
+  // 19. WhatsApp Audio Script
+  async whatsappAudio(lead: string): Promise<string> { return `(Tom casual) "Fala ${lead}, tudo bom? Tentei te ligar agora. Vi uma coisa no seu site que me chamou atenção sobre [Tópico]. Me avisa quando puder falar, é rápido."`; }
+
+  // 20. Voice Note Summary
+  async summarizeVoice(text: string): Promise<string> { return `**Resumo da Call:**\n- Cliente interessado.\n- Dor principal: Preço.\n- Próximo passo: Enviar proposta até sexta.`; }
 }

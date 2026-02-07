@@ -1,2 +1,2 @@
-export * from './services/bdr.service';
-export * from './types/bdr';
+export * from './services/communication-suite.service';
+export * from './services/email.service';
