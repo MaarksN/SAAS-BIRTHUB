@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
+import { features } from './features';
 import { guard } from './guard';
-import { features, FeatureFlags } from './features';
 
 describe('Guard', () => {
   it('should allow requests within rate limit', () => {

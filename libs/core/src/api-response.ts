@@ -1,28 +1,13 @@
-import { z } from 'zod';
-
-export const ApiResponseMetaSchema = z.object({
-  page: z.number().optional(),
-  limit: z.number().optional(),
-  total: z.number().optional(),
-});
-
-export type ApiResponseMeta = z.infer<typeof ApiResponseMetaSchema>;
-
-export const apiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) => z.object({
-  success: z.boolean(),
-  data: dataSchema.optional(),
-  error: z.string().optional(),
-  meta: ApiResponseMetaSchema.optional(),
-});
+import { PaginationMetaDto } from './dtos/v1/common.dto';
 
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
-  meta?: ApiResponseMeta;
+  meta?: PaginationMetaDto;
 }
 
-export function successResponse<T>(data: T, meta?: ApiResponseMeta): ApiResponse<T> {
+export function successResponse<T>(data: T, meta?: PaginationMetaDto): ApiResponse<T> {
   return {
     success: true,
     data,

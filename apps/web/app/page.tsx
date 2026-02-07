@@ -1,48 +1,61 @@
-'use client';
-
-import React from 'react';
-import { LinkedInAutomation } from '@salesos/social';
-import { AuditService } from '@salesos/enterprise';
-import { ReferralSystem } from '@salesos/growth';
-import { CommandPalette, Button, Input } from '@salesos/ui';
-import { AppError } from '@salesos/core';
-
-const commands = [
-  { id: '1', name: 'Go to Dashboard', action: () => alert('Going to dashboard') },
-  { id: '2', name: 'Create Lead', action: () => alert('Creating lead') },
-];
+"use client";
+import React from "react";
+import { Button, Input, Card, CardContent } from "@salesos/ui";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  // Just to demonstrate usage (these would normally be used in specific components)
-  const linkedIn = new LinkedInAutomation();
-  const audit = new AuditService();
-  const referral = new ReferralSystem();
+  const router = useRouter();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulação de login
+    router.push("/dashboard");
+  };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-slate-50">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          SalesOS <span className="text-blue-600">Ultimate</span>
-        </h1>
-        <div className="hidden">
-            {/* Keeping references to demonstrate libraries are linked */}
-            <CommandPalette commands={commands} />
-        </div>
-      </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4">
+      <div className="z-10 max-w-5xl w-full flex flex-col items-center gap-8">
 
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">Login to Prospector</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <Input type="email" placeholder="sales@example.com" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <Input type="password" placeholder="••••••••" />
-          </div>
-          <Button className="w-full">Sign In</Button>
+        <div className="text-center space-y-4">
+          <h1 className="text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+            SalesOS Ultimate
+          </h1>
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            A plataforma unificada de inteligência comercial.
+            Do enriquecimento de leads (LDR) ao fechamento (AE) em um só lugar.
+          </p>
         </div>
+
+        <Card className="w-full max-w-md bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+          <CardContent className="p-8">
+            <h2 className="text-2xl font-semibold mb-6 text-center text-white">Acesso à Plataforma</h2>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">E-mail Corporativo</label>
+                <Input
+                  type="email"
+                  placeholder="voce@empresa.com"
+                  className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Senha</label>
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  className="bg-slate-900/50 border-slate-600 text-white"
+                />
+              </div>
+              <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 mt-4">
+                Entrar no Sistema
+              </Button>
+            </form>
+            <div className="mt-6 text-center text-xs text-slate-500">
+              Protegido por criptografia de ponta a ponta. SOC2 Compliant.
+            </div>
+          </CardContent>
+        </Card>
+
       </div>
     </main>
   );
