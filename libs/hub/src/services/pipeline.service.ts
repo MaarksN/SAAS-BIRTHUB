@@ -8,7 +8,7 @@ export class PipelineService {
     return [
       { id: "1", title: "Deal A", value: 5000, stage: "Negotiation", probability: 0.8 },
       { id: "2", title: "Deal B", value: 12000, stage: "Discovery", probability: 0.2 }
-    ] as any;
+    ];
   }
 
   // --- CRM HUB FEATURES (TOOLS 31-40) ---

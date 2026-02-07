@@ -1,5 +1,7 @@
 export * from './components/theme-provider';
 export * from './components/ui/sonner';
+export * from './components/ui/toaster-hot';
+export * from './components/ui/avatar-hash';
 export * from './components/command-palette';
 export * from './components/Button';
 export * from './components/DashboardShell';
@@ -14,3 +16,7 @@ export * from './components/Fab';
 export * from './components/Confetti';
 export * from './components/EmptyState';
 export * from './components/KeyboardShortcuts';
+export * from './components/kanban-board-simple';
+export * from './components/tag-input';
+export * from './components/error-boundary';
+export { default as useLocalStorage } from './hooks/use-local-storage';

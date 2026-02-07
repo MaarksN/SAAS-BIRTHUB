@@ -21,8 +21,8 @@ export class SDRService {
     };
     let response = "Poderia detalhar?";
     const lower = text.toLowerCase();
-    if (lower.includes("preço") || lower.includes("caro")) response = objectionsMap["caro"];
-    else if (lower.includes("tempo")) response = objectionsMap["tempo"];
+    if (lower.includes("preço") || lower.includes("caro")) response = objectionsMap["caro"] || "Poderia detalhar?";
+    else if (lower.includes("tempo")) response = objectionsMap["tempo"] || "Poderia detalhar?";
 
     return { objection: text, response };
   }
