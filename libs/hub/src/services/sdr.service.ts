@@ -1,16 +1,33 @@
-import { ILeadScore, IObjectionResponse } from "../types/sdr";
+import { ILeadScore, IObjectionResponse } from '../types/sdr';
+import { RedisCacheService } from '@salesos/cache';
+import { logger } from '@salesos/core';
+import { LeadScoreSchema } from '../schemas';
 
 export class SDRService {
+  private cache = new RedisCacheService();
 
-  // --- EXISTING METHODS ---
-  async scoreLead(leadId: string, data?: any): Promise<ILeadScore> {
-    const signals = data || { websiteVisits: 5, emailOpens: 2, pricingPageViews: 1, role: "Decision Maker" };
-    let score = 0;
-    if (signals.role === "Decision Maker") score += 30;
-    if (signals.pricingPageViews > 0) score += 25;
-    score += (signals.websiteVisits * 2);
-    score += (signals.emailOpens * 5);
-    return { leadId, score: Math.min(score, 100), factors: { behavioral: score * 0.6, demographic: score * 0.4 } };
+  // 1. Lead Scoring Comportamental
+  async scoreLead(leadId: string): Promise<ILeadScore> {
+    const cacheKey = `hub:score:${leadId}`;
+    const cached = await this.cache.get<ILeadScore>(cacheKey);
+
+    if (cached) {
+      logger.info('Returning cached lead score', { leadId });
+      return cached;
+    }
+
+    logger.info('Calculating lead score', { leadId });
+    // Mock calculation
+    const result = { leadId, score: 85, factors: { visits: 10 } };
+
+    const parsed = LeadScoreSchema.safeParse(result);
+    if (!parsed.success) {
+        logger.error('Invalid lead score', { errors: parsed.error });
+        throw new Error('Invalid lead score generated');
+    }
+
+    await this.cache.set(cacheKey, parsed.data, 300); // 5 min cache
+    return parsed.data;
   }
 
   async handleObjection(text: string): Promise<IObjectionResponse> {

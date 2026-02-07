@@ -44,6 +44,20 @@ export const llmGateway = {
 
     // Mock LLM response
     // In real implementation, this would call the provider
-    return `[AI Response from ${request.provider || 'openai'}] Based on the context, I suggest focusing on value-based selling...`;
+    return retry(async () => {
+      // Simulate network call
+      return `[AI Response from ${request.provider || 'openai'}] Based on the context, I suggest focusing on value-based selling...`;
+    }, 3);
   }
 };
+
+async function retry<T>(fn: () => Promise<T>, retries: number, delayMs = 1000): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (retries <= 0) throw error;
+    logger.warn(`Retrying operation... (${retries} attempts left)`);
+    await new Promise(res => setTimeout(res, delayMs));
+    return retry(fn, retries - 1, delayMs * 2);
+  }
+}

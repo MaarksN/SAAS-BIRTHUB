@@ -1,27 +1,61 @@
-import { ICNPJEnrichmentResult, IDataReliabilityScore, IInactiveCompanyDetection } from "../types/ldr";
+import { env } from '@salesos/config';
+import {
+  ICNPJEnrichmentResult,
+  IDataReliabilityScore,
+  IInactiveCompanyDetection,
+  ICompanySegmentCluster,
+  ICNAENormalization,
+  IGenericRoleDetection,
+} from '../types/ldr';
+import { RedisCacheService } from '@salesos/cache';
+import { logger } from '@salesos/core';
+import { CNPJEnrichmentResultSchema } from '../schemas';
 
 // Serviço LDR Profissionalizado (Expansão Pacote 2)
 export class LDRService {
-  private aiAgentUrl = process.env.NEXT_PUBLIC_AI_AGENT_URL || "http://localhost:8000/api/v1";
+  private aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
+  private cache = new RedisCacheService();
 
   // --- EXISTING METHODS ---
   async enrichCNPJ(cnpj: string): Promise<ICNPJEnrichmentResult> {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return {
-        cnpj,
-        legalName: "Tech Corp Brasil Ltda",
-        tradeName: "TechCorp",
-        foundedDate: "2019-03-15",
-        status: "ACTIVE",
-        address: { street: "Av. Faria Lima", city: "São Paulo", state: "SP", zipCode: "01451-000" },
-        phones: ["(11) 99999-8888"],
-        emails: ["contato@techcorp.com.br"],
-        cnae: { code: "6202-3/00", description: "Softwares" },
-      };
-    } catch (error) {
-      throw new Error("Falha no serviço de enriquecimento.");
+    const cacheKey = `ldr:enrich:${cnpj}`;
+    const cached = await this.cache.get<ICNPJEnrichmentResult>(cacheKey);
+
+    if (cached) {
+      logger.info('Returning cached CNPJ enrichment', { cnpj });
+      return cached;
     }
+
+    logger.info('Enriching CNPJ from source', { cnpj });
+
+    // Mock return (simulating external call)
+    const result = {
+      cnpj,
+      legalName: 'Mock Company Ltda',
+      foundedDate: '2020-01-01',
+      status: 'ACTIVE',
+      address: {
+        street: 'Rua Mock, 123',
+        city: 'São Paulo',
+        state: 'SP',
+        zipCode: '01000-000',
+      },
+      phones: ['11999999999'],
+      emails: ['contact@mock.com'],
+      cnae: {
+        code: '6201-5/00',
+        description: 'Desenvolvimento de programas de computador sob encomenda',
+      },
+    };
+
+    const parsed = CNPJEnrichmentResultSchema.safeParse(result);
+    if (!parsed.success) {
+      logger.error('Invalid enrichment data', { errors: parsed.error });
+      throw new Error('Invalid enrichment data');
+    }
+
+    await this.cache.set(cacheKey, parsed.data, 60 * 60 * 24); // 24h cache
+    return parsed.data as ICNPJEnrichmentResult;
   }
 
   async calculateReliabilityScore(companyId: string): Promise<IDataReliabilityScore> {

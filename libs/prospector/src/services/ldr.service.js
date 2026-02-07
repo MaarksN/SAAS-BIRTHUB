@@ -1,7 +1,7 @@
-// Serviço LDR Profissionalizado (Expansão Pacote 2)
+import { env } from '@salesos/config';
 export class LDRService {
-    aiAgentUrl = process.env.NEXT_PUBLIC_AI_AGENT_URL || "http://localhost:8000/api/v1";
-    // --- EXISTING METHODS ---
+    aiAgentUrl = env.AI_AGENT_URL || 'http://localhost:8000';
+    // 1. Enriquecimento Automático de CNPJ
     async enrichCNPJ(cnpj) {
         try {
             await new Promise(resolve => setTimeout(resolve, 800));

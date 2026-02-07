@@ -1,7 +1,12 @@
-export const APP_CONFIG = {
-  name: 'SalesOS Ultimate',
-  version: '1.0.0',
-  env: process.env.NODE_ENV || 'development'
-};
-
-export type Role = 'ADMIN' | 'MANAGER' | 'MEMBER';
+export * from './context';
+export * from './dtos/v1';
+export * from './errors/AppError';
+export * from './features';
+export * from './guard';
+export * from './logger';
+export * from './mappers/lead-crm.mapper';
+export * from './middleware/rate-limit';
+export * from './middleware/validate';
+export * from './schemas/v1';
+export * from './utils/circuit-breaker';
+export { env } from '@salesos/config';

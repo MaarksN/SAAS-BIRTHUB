@@ -7,6 +7,7 @@ const nextConfig = {
   transpilePackages: [
     "@salesos/ui",
     "@salesos/core",
+    "@salesos/config",
     "@salesos/database",
     "@salesos/auth",
     "@salesos/prospector",
