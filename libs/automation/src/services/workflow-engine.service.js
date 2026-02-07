@@ -1,11 +1,13 @@
 export class WorkflowEngineService {
     // 41. Trigger Engine: "If this, then that" workflow builder.
-    async triggerEngine(event, payload) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    async triggerEngine(event, _payload) {
         console.log(`Trigger received: ${event}`);
         // Evaluate conditions and execute actions
     }
     // 42. Webhook Support: Incoming/outgoing webhooks.
-    async webhookSupport(direction, url, data) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    async webhookSupport(direction, url, _data) {
         if (direction === 'OUTGOING') {
             console.log(`Posting to ${url}`);
             return { status: 200 };
@@ -13,7 +15,8 @@ export class WorkflowEngineService {
         return { status: 'RECEIVED' };
     }
     // 43. Visual Builder: Drag-and-drop interface metadata.
-    async visualBuilder(workflowId) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    async visualBuilder(_workflowId) {
         return {
             nodes: [{ id: '1', type: 'trigger' }, { id: '2', type: 'action' }],
             edges: [{ source: '1', target: '2' }]
@@ -24,7 +27,8 @@ export class WorkflowEngineService {
         return `Scheduled workflow ${workflowId} with cron ${cronExpression}`;
     }
     // 45. Error Handling: Retry logic and alerts.
-    async errorHandling(workflowExecutionId, error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    async errorHandling(workflowExecutionId, _error) {
         console.log(`Handling error for ${workflowExecutionId}`);
         return { retry: true, alertSent: true };
     }

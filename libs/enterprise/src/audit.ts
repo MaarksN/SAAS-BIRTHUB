@@ -4,6 +4,7 @@ export interface AuditLogEntry {
   action: string;
   resource: string;
   timestamp: Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>;
 }
 
@@ -18,7 +19,8 @@ export class AuditService {
     // Implementation would write to immutable storage
   }
 
-  async query(userId: string): Promise<AuditLogEntry[]> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async query(_userId: string): Promise<AuditLogEntry[]> {
     // Mock query
     return [];
   }

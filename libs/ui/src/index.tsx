@@ -19,4 +19,6 @@ export * from './components/KeyboardShortcuts';
 export * from './components/kanban-board-simple';
 export * from './components/tag-input';
 export * from './components/error-boundary';
+export * from './services/mobile-experience.service';
+export * from './services/ux-polish.service';
 export { default as useLocalStorage } from './hooks/use-local-storage';

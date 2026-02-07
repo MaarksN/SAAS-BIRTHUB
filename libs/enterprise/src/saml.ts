@@ -12,7 +12,8 @@ export class SAMLManager {
     return `<EntityDescriptor entityID="${this.config.issuer}"></EntityDescriptor>`;
   }
 
-  validateResponse(response: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  validateResponse(_response: string): boolean {
     // Verify SAML response signature
     return true;
   }

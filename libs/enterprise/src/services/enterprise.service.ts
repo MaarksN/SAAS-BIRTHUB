@@ -1,13 +1,15 @@
 export class EnterpriseService {
 
   // 81. SAML/SSO Configuration
-  async configureSSO(domain: string, metadataUrl: string): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async configureSSO(domain: string, _metadataUrl: string): Promise<boolean> {
     console.log(`[Enterprise] Configured SSO for ${domain}`);
     return true;
   }
 
   // 82. Audit Logs (Mock Data)
-  async getAuditLogs(orgId: string): Promise<any[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  async getAuditLogs(_orgId: string): Promise<any[]> {
     return [
       { id: 1, action: "USER_LOGIN", actor: "admin@corp.com", ip: "192.168.1.1", timestamp: new Date().toISOString() },
       { id: 2, action: "EXPORT_LEADS", actor: "sdr@corp.com", ip: "192.168.1.2", timestamp: new Date().toISOString() }
@@ -26,12 +28,14 @@ export class EnterpriseService {
   }
 
   // 85. API Key Management
-  async generateApiKey(name: string): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async generateApiKey(_name: string): Promise<string> {
     return `sk_live_${Math.random().toString(36).substr(2, 24)}`;
   }
 
   // 86. IP Whitelist
-  async updateIpWhitelist(ips: string[]): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async updateIpWhitelist(_ips: string[]): Promise<boolean> {
     return true;
   }
 
@@ -42,7 +46,8 @@ export class EnterpriseService {
   }
 
   // 88. Compliance Export
-  async exportUserData(userId: string, format: 'JSON' | 'CSV'): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async exportUserData(_userId: string, _format: 'JSON' | 'CSV'): Promise<string> {
     return "https://secure-storage.salesos.com/exports/user_123.zip";
   }
 

@@ -1,3 +1,4 @@
 export * from './linkedin';
-export * from './twitter';
 export * from './scheduler';
+export * from './services/social-selling.service';
+export * from './twitter';
